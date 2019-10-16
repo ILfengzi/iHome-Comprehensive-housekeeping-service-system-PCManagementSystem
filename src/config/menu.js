@@ -32,38 +32,34 @@ const asideMenuConfig = [
     ],
   },
   {
-    path: '/table',
-    name: '表格页',
+    path: '/order',
+    name: '订单管理',
     icon: 'el-icon-date',
     children: [
       {
-        path: '/basic',
-        name: '基础表格',
-      },
-      {
-        path: '/fixed',
-        name: '固定表格',
+        path: '/order',
+        name: '订单',
       },
     ],
   },
   {
-    path: '/form',
-    name: '表单页',
+    path: '/person',
+    name: '人员信息管理',
     icon: 'el-icon-edit-outline',
     children: [
       {
-        path: '/basic',
-        name: '典型表单',
+        path: '/staff',
+        name: '从业人员管理',
       },
-      {
-        path: '/signup',
-        name: '注册表单',
-      },
+	  {
+	    path: '/logistics',
+	    name: '后勤人员管理',
+	  },
     ],
   },
   {
-    path: '/charts',
-    name: '图表页',
+    path: '/tool',
+    name: '工具管理',
     icon: 'el-icon-picture-outline',
     children: [
       {

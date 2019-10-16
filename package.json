@@ -53,5 +53,6 @@
     "type": "vue",
     "adapter": "adapter-vue-v2"
   },
-  "title": "iHome"
+  "title": "iHome",
+  "main": "vue.config.js"
 }

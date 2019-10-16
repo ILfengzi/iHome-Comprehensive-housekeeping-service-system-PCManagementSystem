@@ -2,22 +2,24 @@ import HeaderAsideLayout from '@/layouts/HeaderAsideLayout';
 import NotFound from '@/pages/NotFound';
 import Dashboard from '@/pages/Dashboard';
 import Login from '@/pages/Login';
+import Order from '@/pages/Order';
+import StaffManage from '@/pages/PersonManage/StaffManage';
+import LogisticsManage from '@/pages/PersonManage/LogisticsManage';
 
 const routerConfig = [
   {
-    path: '/table',
+    path: '/order',
     component: HeaderAsideLayout,
     children: [
-      { path: '/table/basic', component: NotFound },
-      { path: '/table/fixed', component: NotFound },
+      { path: '/order/order', component: Order },
     ],
   },
   {
-    path: '/form',
+    path: '/person',
     component: HeaderAsideLayout,
     children: [
-      { path: '/form/basic', component: NotFound },
-      { path: '/form/signup', component: NotFound },
+      { path: '/person/staff', component: StaffManage },
+      { path: '/person/logistics', component: LogisticsManage },
     ],
   },
   {
