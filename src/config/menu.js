@@ -14,22 +14,10 @@ const headerMenuConfig = [];
 const asideMenuConfig = [
   {
     path: '/dashboard',
-    name: 'Dashboard',
+    name: '用户管理',
     icon: 'el-icon-menu',
-    children: [
-      {
-        path: '/analysis',
-        name: '分析页',
-      },
-      {
-        path: '/monitor',
-        name: '监控页',
-      },
-      {
-        path: '/workplace',
-        name: '工作台',
-      },
-    ],
+    children: [{ path: '/user', name: '客户信息管理', id: 'Menu_fmcl6' }],
+    id: 'Menu_f1xnd',
   },
   {
     path: '/order',
@@ -41,6 +29,7 @@ const asideMenuConfig = [
         name: '订单',
       },
     ],
+    id: 'Menu_5owir',
   },
   {
     path: '/person',
@@ -56,55 +45,38 @@ const asideMenuConfig = [
 	    name: '后勤人员管理',
 	  },
     ],
+    id: 'Menu_ngali',
   },
   {
     path: '/tool',
     name: '工具管理',
     icon: 'el-icon-picture-outline',
     children: [
-      {
-        path: '/line',
-        name: '折线图',
-      },
-      {
-        path: '/histogram',
-        name: '柱状图',
-      },
-      {
-        path: '/bar',
-        name: '条形图',
-      },
+      { path: '/line', name: '折线图', id: 'Menu_uw149' },
+      { path: '/histogram', name: '柱状图', id: 'Menu_48w2i' },
+      { path: '/bar', name: '条形图', id: 'Menu_etlyg' },
     ],
+    id: 'Menu_y7nwk',
   },
   {
     path: '/profile',
     name: '详情页',
     icon: 'el-icon-tickets',
     children: [
-      {
-        path: '/success',
-        name: '基础详情页',
-      },
-      {
-        path: '/fail',
-        name: '失败',
-      },
+      { path: '/success', name: '基础详情页', id: 'Menu_3tx5j' },
+      { path: '/fail', name: '失败', id: 'Menu_y5ltg' },
     ],
+    id: 'Menu_7ft9w',
   },
   {
     path: '/result',
     name: '结果页',
     icon: 'el-icon-circle-check-outline',
     children: [
-      {
-        path: '/success',
-        name: '成功',
-      },
-      {
-        path: '/fail',
-        name: '失败',
-      },
+      { path: '/success', name: '成功', id: 'Menu_uude1' },
+      { path: '/fail', name: '失败', id: 'Menu_682r2' },
     ],
+    id: 'Menu_lkx69',
   },
 ];
 

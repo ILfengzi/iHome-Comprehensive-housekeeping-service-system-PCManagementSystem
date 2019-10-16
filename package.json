@@ -4,11 +4,12 @@
   "description": "该模板适用于从 0 到 1 开始搭建项目，内置基础的页面，路由和菜单展示。",
   "author": "ice-admin@alibaba-inc.com",
   "scripts": {
-    "start": "vue-cli-service serve",
+    "start": "vue-cli-service serve --port=8080",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@d2-projects/d2-crud": "^1.3.5",
     "@vue-materials/basic-container": "^1.0.0",
     "element-ui": "^2.3.6",
     "normalize.css": "^8.0.0",
