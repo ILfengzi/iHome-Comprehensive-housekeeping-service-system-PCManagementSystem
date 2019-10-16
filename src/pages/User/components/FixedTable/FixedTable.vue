@@ -71,7 +71,24 @@ import BasicContainer from '@vue-materials/basic-container'
       tableData3
     }
   },
+  created:{
+
+  },
   methods: {
+    getUser() {
+			
+			this.axios.get('json/administrativestructure/department/listLikeDepartmentName/')
+				.then(res => {
+					  // this.tableData3 =res.data;
+            console.log(error);
+				})
+				.catch(error => {
+					console.log(error);
+					alert('网络错误，不能访问');
+		
+				})
+				
+		},
     handleEdit(index, row) {
       console.log(index, row);
     },
