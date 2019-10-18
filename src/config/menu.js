@@ -23,12 +23,7 @@ const asideMenuConfig = [
     path: '/order',
     name: '订单管理',
     icon: 'el-icon-date',
-    children: [
-      {
-        path: '/order',
-        name: '订单',
-      },
-    ],
+    children: [{ path: '/order', name: '订单', id: 'Menu_ywi3m' }],
     id: 'Menu_5owir',
   },
   {
@@ -36,16 +31,19 @@ const asideMenuConfig = [
     name: '人员信息管理',
     icon: 'el-icon-edit-outline',
     children: [
-      {
-        path: '/staff',
-        name: '从业人员管理',
-      },
-	  {
-	    path: '/logistics',
-	    name: '后勤人员管理',
-	  },
+      { path: '/staff', name: '从业人员管理', id: 'Menu_sn7l8' },
+      { path: '/logistics', name: '后勤人员管理', id: 'Menu_ujy6g' },
     ],
     id: 'Menu_ngali',
+  },
+  {
+    children: [
+      { path: '/salary', name: '员工工资', id: 'Menu_kbc5w', icon: '' },
+    ],
+    path: '/dashboard',
+    name: '财务统计',
+    id: 'Menu_yrqij',
+    icon: 'el-icon-bank-card',
   },
   {
     path: '/tool',

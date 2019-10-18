@@ -10,11 +10,11 @@
           label="姓名"
           width="120">
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="province"
           label="省份"
           width="120">
-        </el-table-column>
+        </el-table-column> -->
         <!-- <el-table-column
           prop="tag"
           label="标签"
@@ -28,7 +28,7 @@
               close-transition>{{scope.row.tag}}</el-tag>
           </template>
         </el-table-column> -->
-        <el-table-column
+        <!-- <el-table-column
           prop="city"
           label="市区"
           width="120">
@@ -37,21 +37,25 @@
           prop="detail"
           label="地址"
           width="300">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="phone"
           label="电话"
           width="120">
         </el-table-column>
-        <el-table-column label="操作" width="180" fixed="right">
-          <template slot-scope="scope">
+        <el-table-column label="常用地址及联系方式" width="120">
+        </el-table-column>
+            <template slot-scope="scope1">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              @click="handleEdit(scope1.$index, scope1.row)">详情</el-button>
+            </template>
+        <el-table-column label="操作" width="180" fixed="right">
+          <template slot-scope="scope2">
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              @click="handleDelete(scope2.$index, scope2.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,7 +64,7 @@
 </template>
 
 <script>
-import BasicContainer from '@vue-materials/basic-container'
+import BasicContainer from '@vue-materials/basic-container';
 
   export default {
   components: { BasicContainer },
@@ -68,27 +72,27 @@ import BasicContainer from '@vue-materials/basic-container'
 
   data() {
     return {
-      tableData3
+      tableData3,
     }
   },
-  created:{
-
+  created(){
+    this.getUser();
   },
   methods: {
     getUser() {
 			
-			this.axios.get('json/administrativestructure/department/listLikeDepartmentName/')
+			this.axios.get('json/administrativestructure/department/listLikeDepartmentName')
 				.then(res => {
-					  // this.tableData3 =res.data;
+					  this.tableData3 =res.data;
             console.log(error);
 				})
 				.catch(error => {
 					console.log(error);
 					alert('网络错误，不能访问');
 		
-				})
+				});
 				
-		},
+		}, 
     handleEdit(index, row) {
       console.log(index, row);
     },
