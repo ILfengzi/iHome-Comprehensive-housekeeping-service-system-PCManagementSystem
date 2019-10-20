@@ -45,7 +45,29 @@
         </el-tab-pane>
       </el-tabs>
     </basic-container>
+    <!-- Form -->
+    <el-dialog title="修改提成和奖金" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="提成" :label-width="formLabelWidth">
+          <el-input v-model="form.bonusrate" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="奖金" :label-width="formLabelWidth">
+          <el-input v-model="form.rolatyrate" autocomplete="off"></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="活动区域" :label-width="formLabelWidth">
+          <el-select v-model="form.region" placeholder="请选择活动区域">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item> -->
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
+  
 </template>
 
 <script>
@@ -101,10 +123,19 @@ export default {
         },
       ],
       visible: false,
+      dialogFormVisible: false,
+        form: {
+          bonusrate: '',
+          rolatyrate: '',
+        },
+       formLabelWidth: '120px'
     };
   },
 
-  created() {},
+  created() {
+    var currentDate=this.getFormatDate();
+    this.getSalary(currentDate);
+  },
 
   mounted() {
     //this.dataSource = response.data.all;
@@ -119,8 +150,10 @@ export default {
 				.then(res => {
             this.dataSource=res.data.list;
             //this.dataSource=res.data.list.iStaff.name;
-
-            //this.$set(this.data[i],'name',res.data.list[i].iStaff.name)
+            for(let i=0;i<res.data.list.length;i++){
+							  this.$set(this.dataSource[i],'name',res.data.list[i].iStaff.name);
+						}
+            
 					  console.log(res.data);
 						
 				})
@@ -133,33 +166,55 @@ export default {
     handleClick(tab) {
       console.log(tab);
     },
-    handleChange() {
-      //console.log(this.value);
+    getFormatDate() {
+      //获取时间
+      //非空则为时间选择器选择的时间
       if(this.value!=null){
         var date =new Date(this.value); 
       }
+      //为空则获取当前时间
       else{
         var date=new Date();
       }
+      //对获取到的时间进行处理
       var month = date.getMonth() + 1;
       var strDate = date.getDate();
+      var hour=date.getHours();
+			var minute=date.getMinutes();
+      var second=date.getSeconds();
+      //为1、2、3...等前面补0
 			if (month >= 1 && month <= 9) {
 				month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+					strDate = "0" + strDate;
+      }
+      if (hour >= 0 && hour<= 9) {
+					hour = "0" + hour;
 			}
+			if (minute >= 0 && minute <= 9) {
+					minute= "0" + minute;
+			}
+			if (second >= 0 && second <= 9) {
+					second = "0" + second;
+      }
+      //将时间进行拼接
       var currentDate = date.getFullYear() + "-" + month + "-" + strDate
-						+ " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+					+ " " + hour + ":" + minute + ":" + second;
       
-      console.log(strDate);
-      console.log(currentDate);
-      currentDate="2019-10-17 10:32:29";
-     
+     // console.log(strDate);
+       console.log(currentDate);
+       return currentDate;
+     //currentDate="2019-10-17 10:32:29";
+    },
+    handleChange() {
+      var currentDate=this.getFormatDate();
       this.getSalary(currentDate);
     },
 
     handleEdit(index, row) {
+      this.dialogFormVisible=true;
       console.log(index, row);
-      
-
     },
     handleDelete(index, row) {
       console.log(index, row);
