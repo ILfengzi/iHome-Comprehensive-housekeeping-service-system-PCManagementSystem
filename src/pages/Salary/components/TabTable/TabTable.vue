@@ -31,10 +31,11 @@
                     size="mini"
                     type="danger"
                     @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                </span> -->
+                </span>  -->
               </template>
             </el-table-column>
           </el-table>
+          <!-- <div id="myChart" :style="{width: '300px', height: '300px'}"></div> -->
     </basic-container>
     <!-- Form -->
     <el-dialog title="修改提成和奖金" :visible.sync="dialogFormVisible">
@@ -166,6 +167,7 @@ export default {
 
   mounted() {
     //this.dataSource = response.data.all;
+    //  this.drawLine();
   },
 
   methods: {
@@ -241,7 +243,7 @@ export default {
       this.getSalary(currentDate);
     },
 
-    handleEdit(index, row) {
+    handleEdit() {
       this.dialogFormVisible=true;
       this.axios.post('http://10.86.2.14:80/json/order/selectBytypename',
       {
@@ -268,33 +270,52 @@ export default {
         "typeid":this.form.detailtypeId
       })
 				.then(res => {
+          var currentDate=this.getFormatDate();
+          this.getSalary(currentDate);
 				})
 				.catch(error => {
 					console.log(error);
 					alert('网络错误，不能访问');
         })
-      var currentDate=this.getFormatDate();
-      this.getSalary(currentDate);
+      
       this.dialogFormVisible=false;
     },
-    handleUpdate1(index, row){
-      console.log(this.myIndex,this.myRow);
+    // handleUpdate1(index, row){
+    //   console.log(this.myIndex,this.myRow);
 
-      this.axios.post('http://10.86.2.14:80/json/order/modifyBaseSalary',
-      {
-        "id":this.row.id,
-        "basesalary":this.form1.basesalary,
+    //   this.axios.post('http://10.86.2.14:80/json/order/modifyBaseSalary',
+    //   {
+    //     "id":this.row.id,
+    //     "basesalary":this.form1.basesalary,
         
-      })
-				.then(res => {
-				})
-				.catch(error => {
-					console.log(error);
-					alert('网络错误，不能访问');
-        })
-      this.$set(this.dataSource[this.myIndex],'basesalary',this.form1.basesalary);
-      this.dialogFormVisible1=false;
-    },
+    //   })
+		// 		.then(res => {
+		// 		})
+		// 		.catch(error => {
+		// 			console.log(error);
+		// 			alert('网络错误，不能访问');
+    //     })
+    //   this.$set(this.dataSource[this.myIndex],'basesalary',this.form1.basesalary);
+    //   this.dialogFormVisible1=false;
+    // },
+    //  drawLine(){
+    //     // 基于准备好的dom，初始化echarts实例
+    //     let myChart = this.$echarts.init(document.getElementById('myChart'))
+    //     // 绘制图表
+    //     myChart.setOption({
+    //         title: { text: '在Vue中使用echarts' },
+    //         tooltip: {},
+    //         xAxis: {
+    //             data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+    //         },
+    //         yAxis: {},
+    //         series: [{
+    //             name: '销量',
+    //             type: 'bar',
+    //             data: [5, 20, 36, 10, 10, 20]
+    //         }]
+    //     });
+    // },
     handleDelete(index, row) {
       console.log(index, row);
     },

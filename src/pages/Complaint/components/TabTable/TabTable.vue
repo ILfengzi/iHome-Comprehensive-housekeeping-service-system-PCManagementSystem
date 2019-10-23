@@ -6,7 +6,7 @@
           v-for="tab in tabs"
           :label="tab.tab"
           :name="tab.key"
-          :key="tab.key">
+          :key="tab.key">          
           <el-table
             :data="dataSource"
             style="width: 100%">
@@ -20,26 +20,58 @@
                 <span v-if="item.key !== 'cstatus'">{{scope.row[item.dataIndex]}}</span>
                 <!-- <edit-dialog :row="scope.row" :key.sync="item.key" :index="scope.$index" :tabKey="tabKey" @handleMod="handleMod"></edit-dialog>
                 <delete-balloon :key.sync="item.key" :index="scope.$index" :tabKey="tabKey" @handleRemove="handleRemove"></delete-balloon> -->
-                <span v-else-if="item.value!=='已处理'">
+                <span v-else-if="scope.row[item.dataIndex]!='1'">
                   <el-button
-                    size="mini"
+                    size="medium"
+                    key="0"
                     type="warning"
-                    @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                    
+                    @click="handleEdit(scope.$index, scope.row)">待处理</el-button>
                 </span>
                 <span v-else>
                   <el-button
-                    size="mini"
+                    size="medium"
+                    key="1"
                     type="primary"
-                    @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                    disabled
+                    >已处理</el-button>
                 </span>
               </template>
             </el-table-column>
-
           </el-table>
+        </el-tab-pane>
+        <el-tab-pane 
+          :label="'新建投诉记录'"
+          :name="'2'"
+          :key="'2'"
+          tab-position="right">
+        <el-form :model="form">
+        <el-form-item label="订单id" :label-width="formLabelWidth1">
+          <el-input v-model="form1.orderId" style="width:350px;"></el-input>
+        </el-form-item>
+        <el-form-item label="投诉问题" :label-width="formLabelWidth1">
+          <el-input v-model="form1.complaint" style="width:350px;"></el-input>
+        </el-form-item>
+        <el-form-item :label-width="formLabelWidth1">
+            <el-button type="primary" @click="onSubmit">添加</el-button>
+            <el-button @click="resetForm('ruleForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
         </el-tab-pane>
       </el-tabs>
     </basic-container>
-   
+   <!-- Form -->
+    <el-dialog title="填写投诉处理方案" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="处理方案" :label-width="formLabelWidth">
+          <el-input type="textarea" v-model="form.solve" autocomplete="off" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleUpdate()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
   
 </template>
@@ -60,10 +92,16 @@ export default {
       tabKey: 'all',
       dataSource:[],
       value:null,
+      form1: {
+          orderId: null,
+          complaint: null,
+          
+      },
+      formLabelWidth1: '300px',
       tabs: [
         { tab: '全部', key: 'all' },
-        { tab: '待处理', key: 0 },
-        { tab: '已处理', key: 1},
+        { tab: '待处理', key: '0 '},
+        { tab: '已处理', key: '1'},
       ],
       columns: [
         {
@@ -93,8 +131,8 @@ export default {
         },
         {
           title: '状态',
-          dataIndex: 'cstaus',
-          key: 'cstaus',
+          dataIndex: 'cstatus',
+          key: 'cstatus',
         },
 
         // {
@@ -105,18 +143,18 @@ export default {
       visible: false,
       dialogFormVisible: false,
       form: {
-          bonusrate: null,
-          rolatyrate: null,
-          detailtypeId:null,
+          solve:"",
+          
       },
       formLabelWidth: '120px',
       options:[],
+      complaintId:0,
     };
   },
 
   created() {
-    var currentDate=this.getFormatDate();
-    this.getSalary(currentDate);
+   
+    this.getAllComplaint();
   },
 
   mounted() {
@@ -124,16 +162,31 @@ export default {
   },
 
   methods: {
-    getSalary(currentDate) {
-      this.axios.post('http://10.86.2.35:80/json/order/salarylistBymonth',
+    getAllComplaint() {
+      this.axios.post('http://10.86.2.35:80/json/Complaint/selectComplaintByStatus',
       {
-        date1:currentDate
+        
       })
 				.then(res => {
-            this.dataSource=res.data.list;
+            this.dataSource=res.data.complaints;
             //this.dataSource=res.data.list.iStaff.name;
 					  console.log(res.data);
-						
+				})
+				.catch(error => {
+					console.log(error);
+					alert('网络错误，不能访问');
+				})
+				
+    },
+    getComplaintByCstatus(cstatus) {
+      this.axios.post('http://10.86.2.35:80/json/Complaint/selectComplaintByStatus',
+      {
+        "cstatus":cstatus
+      })
+				.then(res => {
+            this.dataSource=res.data.complaints;
+            //this.dataSource=res.data.list.iStaff.name;
+					  console.log(res.data);
 				})
 				.catch(error => {
 					console.log(error);
@@ -142,116 +195,57 @@ export default {
 				
     },
     handleClick(tab) {
-      console.log(tab);
-    },
-    getFormatDate() {
-      //获取时间
-      //非空则为时间选择器选择的时间
-      if(this.value!=null){
-        var date =new Date(this.value); 
+      //console.log(tab);
+      if(tab.label=='全部')
+      {
+        this.getAllComplaint();
+        //console.log(tab);
+      }else if(tab.label=='待处理'){
+        this.getComplaintByCstatus(0);
+        //console.log(tab);
       }
-      //为空则获取当前时间
       else{
-        var date=new Date();
+        this.getComplaintByCstatus(1);
+        //console.log(2);
       }
-      //对获取到的时间进行处理
-      var month = date.getMonth() + 1;
-      var strDate = date.getDate();
-      var hour=date.getHours();
-			var minute=date.getMinutes();
-      var second=date.getSeconds();
-      //为1、2、3...等前面补0
-			if (month >= 1 && month <= 9) {
-				month = "0" + month;
-      }
-      if (strDate >= 0 && strDate <= 9) {
-					strDate = "0" + strDate;
-      }
-      if (hour >= 0 && hour<= 9) {
-					hour = "0" + hour;
-			}
-			if (minute >= 0 && minute <= 9) {
-					minute= "0" + minute;
-			}
-			if (second >= 0 && second <= 9) {
-					second = "0" + second;
-      }
-      //将时间进行拼接
-      var currentDate = date.getFullYear() + "-" + month + "-" + strDate
-					+ " " + hour + ":" + minute + ":" + second;
-      
-     // console.log(strDate);
-       console.log(currentDate);
-       return currentDate;
-     //currentDate="2019-10-17 10:32:29";
     },
-    handleChange() {
-      var currentDate=this.getFormatDate();
-      this.getSalary(currentDate);
-    },
-
-    handleEdit(index, row) {
-      this.dialogFormVisible=true;
-      this.axios.post('http://10.86.2.14:80/json/order/selectBytypename',
-      {
-        
-      })
-				.then(res => {
-          this.options=res.data.listd;
-          
-				})
-				.catch(error => {
-					console.log(error);
-					alert('网络错误，不能访问');
-				})
-      //console.log(index, row);
-      // this.myIndex=index;
-      // this.myRow=row;
-    },
-    handleUpdate(){
+    handleUpdate(tab){
       //console.log(this.form);
-      this.axios.post('http://10.86.2.14:80/json/order/modifySalary',
+      this.axios.post('http://10.86.2.35:80/json/Complaint/solveComplaint',
       {
-        "bonusrate":this.form.bonusrate,
-        "rolatyrate":this.form.rolatyrate,
-        "typeid":this.form.detailtypeId
+        "id":this.complaintId,
+        "solve":this.form.solve,
+        "cstatus":1
       })
 				.then(res => {
+          this.getAllComplaint();
+          console.log(this.dataSource);
 				})
 				.catch(error => {
 					console.log(error);
 					alert('网络错误，不能访问');
         })
-      var currentDate=this.getFormatDate();
-      this.getSalary(currentDate);
       this.dialogFormVisible=false;
+      //tab.$index=0;
+      this.tabKey='all';
+      //this.tab.index="0";
+      
+      
     },
-    handleUpdate1(index, row){
-      console.log(this.myIndex,this.myRow);
+     resetForm(formName) {
+        this.$refs[formName].resetFields();
+    },
+    handleEdit(index, row) {
+      //console.log(row);
+      this.complaintId=row.id
+      this.dialogFormVisible=true;
 
-      this.axios.post('http://10.86.2.14:80/json/order/modifyBaseSalary',
-      {
-        "id":this.row.id,
-        "basesalary":this.form1.basesalary,
-        
-      })
-				.then(res => {
-				})
-				.catch(error => {
-					console.log(error);
-					alert('网络错误，不能访问');
-        })
-      this.$set(this.dataSource[this.myIndex],'basesalary',this.form1.basesalary);
-      this.dialogFormVisible1=false;
-    },
-    handleDelete(index, row) {
-      console.log(index, row);
     },
   },
 }
 
 </script>
-
+ 
 <style>
   .tab-table {
 

@@ -7,13 +7,13 @@ import App from './App.vue';
 import router from './router';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-
-
+import echarts from 'echarts';
 
 Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
+Vue.use(echarts);
 Vue.config.productionTip = false;
-
+Vue.prototype.$echarts = echarts;
 new Vue({
   router,
   render: h => h(App),
