@@ -7,21 +7,8 @@ import Salary from '@/pages/Salary';
 // import Order from '@/pages/Order';
 // import StaffManage from '@/pages/PersonManage/StaffManage';
 // import LogisticsManage from '@/pages/PersonManage/LogisticsManage';
-
+import Complaint from '@/pages/Complaint';
 const routerConfig = [
-  // {
-  //   path: '/order',
-  //   component: HeaderAsideLayout,
-  //   children: [{ path: '/order/order', component: Order }],
-  // },
-  // {
-  //   path: '/person',
-  //   component: HeaderAsideLayout,
-  //   children: [
-  //     { path: '/person/staff', component: StaffManage },
-  //     { path: '/person/logistics', component: LogisticsManage },
-  //   ],
-  // },
   {
     path: '/charts',
     component: HeaderAsideLayout,
@@ -57,6 +44,7 @@ const routerConfig = [
       { path: '/login', component: Login },
       { path: '/dashboard/user', component: User },
       { path: '/dashboard/salary', component: Salary },
+      { path: '/dashboard/complaint', component: Complaint },
     ],
   },
   { path: '*', component: NotFound },

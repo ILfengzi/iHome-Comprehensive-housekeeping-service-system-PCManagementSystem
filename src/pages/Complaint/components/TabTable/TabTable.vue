@@ -1,14 +1,12 @@
 <template>
   <div class="tab-table">
     <basic-container>
-       <el-date-picker
-          v-model="value"
-          type="month"
-          placeholder="选择月">
-        </el-date-picker>
-        &nbsp;
-        <el-button type="primary" @click="handleChange()">更新员工工资</el-button>
-        <el-button type="primary" @click="handleEdit()">修改提成</el-button>
+      <el-tabs v-model="tabKey" @tab-click="handleClick">
+        <el-tab-pane
+          v-for="tab in tabs"
+          :label="tab.tab"
+          :name="tab.key"
+          :key="tab.key">
           <el-table
             :data="dataSource"
             style="width: 100%">
@@ -17,78 +15,42 @@
               :label="item.title"
               :prop="item.dataIndex"
               :key="item.key"
-              :width="item.key !== 'action' ? (item.width || 150) : item.width">
+              :width="item.key !== 'cstatus' ? (item.width || 150) : item.width">
               <template slot-scope="scope">
-                <span v-if="item.key !== 'action'">{{scope.row[item.dataIndex]}}</span>
+                <span v-if="item.key !== 'cstatus'">{{scope.row[item.dataIndex]}}</span>
                 <!-- <edit-dialog :row="scope.row" :key.sync="item.key" :index="scope.$index" :tabKey="tabKey" @handleMod="handleMod"></edit-dialog>
                 <delete-balloon :key.sync="item.key" :index="scope.$index" :tabKey="tabKey" @handleRemove="handleRemove"></delete-balloon> -->
-                <!-- <span v-else>
+                <span v-else-if="item.value!=='已处理'">
+                  <el-button
+                    size="mini"
+                    type="warning"
+                    @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                </span>
+                <span v-else>
                   <el-button
                     size="mini"
                     type="primary"
                     @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-                    <el-button
-                    size="mini"
-                    type="danger"
-                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                </span> -->
+                </span>
               </template>
             </el-table-column>
+
           </el-table>
+        </el-tab-pane>
+      </el-tabs>
     </basic-container>
-    <!-- Form -->
-    <el-dialog title="修改提成和奖金" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="服务项目" :label-width="formLabelWidth">
-          <el-select v-model="form.detailtypeId" clearable placeholder="请选择">
-            <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.typename"
-                :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="奖金" :label-width="formLabelWidth">
-          <el-input v-model="form.bonusrate" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="提成率" :label-width="formLabelWidth">
-          <el-input v-model="form.rolatyrate" autocomplete="off"></el-input>
-        </el-form-item>
-        
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleUpdate()">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- Form
-    <el-dialog title="修改基础工资" :visible.sync="dialogFormVisible1">
-      <el-form :model="form1">
-        <el-form-item label="基础工资" :label-width="formLabelWidth1">
-          <el-input v-model="form1.basesalary" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible1 = false">取 消</el-button>
-        <el-button type="primary" @click="handleUpdate1()">确 定</el-button>
-      </div>
-    </el-dialog> -->
+   
   </div>
   
 </template>
 
 <script>
 import BasicContainer from '@vue-materials/basic-container';
-// import DeleteBalloon from './components/DeleteBalloon';
-// import EditDialog from './components/EditDialog';
-import response from './tab-table.json';
+
 
 export default {
   components: {
     BasicContainer
-   // DeleteBalloon,
-   // EditDialog,
     
   },
   name: 'TabTable',
@@ -100,41 +62,41 @@ export default {
       value:null,
       tabs: [
         { tab: '全部', key: 'all' },
-        { tab: '钟点工', key: 'inreview' },
-        { tab: '维修工', key: 'released' },
-        { tab: '维护工', key: 'rejected' },
+        { tab: '待处理', key: 0 },
+        { tab: '已处理', key: 1},
       ],
       columns: [
         {
-          title: '姓名',
+          title: '服务项目',
+          dataIndex: 'typeName',
+          key: 'typeName',
+        },
+        {
+          title: '用户名',
           dataIndex: 'name',
           key: 'name',
         },
         {
-          title: '服务项目',
-          dataIndex: 'typename',
-          key: 'typename',
+          title: '用户联系方式',
+          dataIndex: 'phone',
+          key: 'phone',
         },
         {
-          title: '基础工资',
-          dataIndex: 'basesalary',
-          key: 'basesalary',
+          title: '投诉问题',
+          dataIndex: 'complaint',
+          key: 'complaint',
         },
         {
-          title: '奖金',
-          dataIndex: 'bonus',
-          key: 'bonus',
+          title: '解决方案',
+          dataIndex: 'solve',
+          key: 'solve',
         },
         {
-          title: '提成',
-          dataIndex: 'royalty',
-          key: 'royalty',
+          title: '状态',
+          dataIndex: 'cstaus',
+          key: 'cstaus',
         },
-        {
-          title: '总工资',
-          dataIndex: 'ssum',
-          key: 'ssum',
-        },
+
         // {
         //   title: '操作',
         //   key: 'action',
@@ -149,13 +111,6 @@ export default {
       },
       formLabelWidth: '120px',
       options:[],
-      dialogFormVisible1:false,
-      form1: {
-         basesalary:null,
-      },
-      formLabelWidth1: '120px',
-      myIndex:null,
-      myRow:null,
     };
   },
 
@@ -170,19 +125,13 @@ export default {
 
   methods: {
     getSalary(currentDate) {
-      this.axios.post('http://10.86.2.14:80/json/order/salarylistBymonth',
+      this.axios.post('http://10.86.2.35:80/json/order/salarylistBymonth',
       {
         date1:currentDate
       })
 				.then(res => {
-            
             this.dataSource=res.data.list;
             //this.dataSource=res.data.list.iStaff.name;
-            for(let i=0;i<res.data.list.length;i++){
-                this.$set(this.dataSource[i],'name',res.data.list[i].iStaff.name);
-                this.$set(this.dataSource[i],'typename',res.data.list[i].iStaff.typename);
-						}
-            
 					  console.log(res.data);
 						
 				})

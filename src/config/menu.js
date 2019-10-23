@@ -15,7 +15,7 @@ const asideMenuConfig = [
   {
     path: '/dashboard',
     name: '用户管理',
-    icon: 'el-icon-menu',
+    icon: 'el-icon-s-custom',
     children: [{ path: '/user', name: '客户信息管理', id: 'Menu_fmcl6' }],
     id: 'Menu_f1xnd',
   },
@@ -44,6 +44,13 @@ const asideMenuConfig = [
     name: '财务统计',
     id: 'Menu_yrqij',
     icon: 'el-icon-bank-card',
+  },
+  {
+    children: [{ name: '投诉', path: '/complaint', id: 'Menu_x269r' }],
+    path: '/dashboard',
+    name: '投诉管理',
+    icon: 'el-icon-document',
+    id: 'Menu_i1jiy',
   },
   {
     path: '/tool',
