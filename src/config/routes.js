@@ -10,7 +10,7 @@ import LogisticsManage from '@/pages/PersonManage/LogisticsManage';
 import OrderPlant from '@/pages/Work/OrderPlant';
 import StaffPlant from '@/pages/Work/StaffPlant';
 import Complaint from '@/pages/Complaint';
-
+import Tool from '@/pages/Tool';
 
 
 const routerConfig = [
@@ -71,6 +71,7 @@ const routerConfig = [
       { path: '/dashboard/user', component: User },
       { path: '/dashboard/salary', component: Salary },
       { path: '/dashboard/complaint', component: Complaint },
+      { path: '/dashboard/tool', component: Tool },
     ],
   },
   { path: '*', component: NotFound },
