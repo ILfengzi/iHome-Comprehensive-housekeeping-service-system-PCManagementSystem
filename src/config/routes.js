@@ -4,24 +4,29 @@ import Dashboard from '@/pages/Dashboard';
 import Login from '@/pages/Login';
 import User from '@/pages/User';
 import Salary from '@/pages/Salary';
-// import Order from '@/pages/Order';
-// import StaffManage from '@/pages/PersonManage/StaffManage';
-// import LogisticsManage from '@/pages/PersonManage/LogisticsManage';
+import Order from '@/pages/Order';
+import StaffManage from '@/pages/PersonManage/StaffManage';
+import LogisticsManage from '@/pages/PersonManage/LogisticsManage';
+import OrderPlant from '@/pages/Work/OrderPlant';
+import StaffPlant from '@/pages/Work/StaffPlant';
+
+
+
 
 const routerConfig = [
-  // {
-  //   path: '/order',
-  //   component: HeaderAsideLayout,
-  //   children: [{ path: '/order/order', component: Order }],
-  // },
-  // {
-  //   path: '/person',
-  //   component: HeaderAsideLayout,
-  //   children: [
-  //     { path: '/person/staff', component: StaffManage },
-  //     { path: '/person/logistics', component: LogisticsManage },
-  //   ],
-  // },
+  {
+    path: '/order',
+    component: HeaderAsideLayout,
+    children: [{ path: '/order/order', component: Order }],
+  },
+  {
+    path: '/person',
+    component: HeaderAsideLayout,
+    children: [
+      { path: '/person/staff', component: StaffManage },
+      { path: '/person/logistics', component: LogisticsManage },
+    ],
+  },
   {
     path: '/charts',
     component: HeaderAsideLayout,
@@ -30,6 +35,14 @@ const routerConfig = [
       { path: '/charts/histogram', component: NotFound },
       { path: '/charts/bar', component: NotFound },
     ],
+  },
+  {
+	  path: '/work',
+	  component: HeaderAsideLayout,
+	  children: [
+		  { path: '/work/orderplant', component: OrderPlant},
+		  { path: '/work/staffplant', component: StaffPlant}
+	  ]
   },
   {
     path: '/profile',
