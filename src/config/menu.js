@@ -49,7 +49,17 @@ const asideMenuConfig = [{
 			},
 		],
 		id: 'Menu_ngali',
-	}, {
+	}, 
+	{
+	    children: [
+	      { path: '/salary', name: '员工工资', id: 'Menu_kbc5w', icon: '' },
+	    ],
+	    path: '/dashboard',
+	    name: '财务统计',
+	    id: 'Menu_yrqij',
+	    icon: 'el-icon-bank-card',
+	  },
+	{
 		path: '/work',
 		name: '工作管理',
 		icon: 'el-icon-edit-outline',
