@@ -168,7 +168,7 @@ export default {
 
   methods: {
     getAllComplaint() {
-      this.axios.post('http://10.86.2.35:80/json/Complaint/selectComplaintByStatus',
+      this.axios.post('http://10.86.2.14:80/json/Complaint/selectComplaintByStatus',
       {
         
       })
@@ -184,7 +184,7 @@ export default {
 				
     },
     getComplaintByCstatus(cstatus) {
-      this.axios.post('http://10.86.2.35:80/json/Complaint/selectComplaintByStatus',
+      this.axios.post('http://10.86.2.14:80/json/Complaint/selectComplaintByStatus',
       {
         "cstatus":cstatus
       })
@@ -216,7 +216,7 @@ export default {
     },
     handleUpdate(tab){
       //console.log(this.form);
-      this.axios.post('http://10.86.2.35:80/json/Complaint/solveComplaint',
+      this.axios.post('http://10.86.2.14:80/json/Complaint/solveComplaint',
       {
         "id":this.complaintId,
         "solve":this.form.solve,
@@ -238,7 +238,7 @@ export default {
       
     },
     onSubmit(){
-      this.axios.post('http://10.86.2.35:80/json/Complaint/addComplaint',
+      this.axios.post('http://10.86.2.14:80/json/Complaint/addComplaint',
       {
         
         "orderId":this.form1.orderId,

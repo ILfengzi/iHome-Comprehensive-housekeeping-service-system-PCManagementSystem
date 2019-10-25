@@ -47,11 +47,11 @@
                   <el-button
                     size="mini"
                     type="primary"
-                    @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                    @click="handleEdit1(scope.$index, scope.row)">修改</el-button>
                     <el-button
                     size="mini"
                     type="danger"
-                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    @click="handleDelete1(scope.$index, scope.row)">删除</el-button>
                 </span>
               </template>
             </el-table-column>
@@ -62,6 +62,7 @@
           :name="'4'"
           :key="'4'"
           >
+        <!-- Form1 用于添加工具-->
         <el-form :model="form1" ref="form1">
         <el-form-item label="工具名称" :label-width="formLabelWidth1" prop="tname">
           <el-input v-model="form1.tname" style="width:350px;"></el-input>
@@ -87,7 +88,7 @@
         </el-tab-pane>
       </el-tabs>
     </basic-container>
-   <!-- Form -->
+   <!-- Form 用于修改工具详情-->
     <el-dialog title="修改工具详情" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="工具名" :label-width="formLabelWidth">
@@ -102,12 +103,35 @@
         <el-button type="primary" @click="handleUpdate()">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- Form2 用于修改工具借用数量、状态-->
+    <el-dialog title="修改工具借用状态" :visible.sync="dialogFormVisible2">
+      <el-form :model="form2">
+        <!-- <el-form-item label="工具数量" :label-width="formLabelWidth2">
+          <el-input  v-model="form2.count" autocomplete="off" clearable></el-input>
+        </el-form-item> -->
+        <el-form-item label="状态" :label-width="formLabelWidth2" prop="state">
+          <el-select v-model="form2.state" clearable placeholder="请选择">
+            <el-option
+                v-for="item in options1"
+                :key="item.key"
+                :label="item.label"
+                :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+        <el-button type="primary" @click="handleUpdate1()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
   
 </template>
 
 <script>
 import BasicContainer from '@vue-materials/basic-container';
+import { stat } from 'fs';
 
 
 export default {
@@ -123,15 +147,39 @@ export default {
       dataSource:[],
       dataSource1:[],
       value:null,
+      options1:[
+        {
+          key:0,
+          label:'待领取',
+        },
+        {
+          key:1,
+          label:'使用中',
+        },
+        {
+          key:2,
+          label:'已归还',
+        },
+        {
+          key:3,
+          label:'损坏',
+        },
+      ],
       form1: {
           tname: null,
           tcount: null,
           detailtypeId:null,
       },
       formLabelWidth1: '300px',
+      form2: {
+          count:0,
+          state:0,
+      },
+      formLabelWidth2: '120px',
+      dialogFormVisible2: false,
       tabs: [
         //{ tab: '全部工具', key: 'all' },
-        { tab: '待领取', key: '0 '},
+        { tab: '待领取', key: '0'},
         { tab: '使用中', key: '1'},
         { tab: '已归还', key: '2'},
         { tab: '损坏', key: '3'},
@@ -222,19 +270,34 @@ export default {
         "state":state,
       })
 				.then(res => {
+            console.log(res);
+            //console.log(this.dataSource1);
             this.dataSource1=res.data.iToolrecordList;
             for(let i=0;i<res.data.iToolrecordList.length;i++){
                 this.$set(this.dataSource1[i],'tname',res.data.iToolrecordList[i].iTool.tname);
-                //this.$set(this.dataSource[i],'typename',res.data.list[i].iStaff.typename);
-						}
-            //this.dataSource=res.data.list.iStaff.name;
-					  //console.log(res.data);
+            }
+            //console.log(state);
+            
+            // if(state==0){
+            //   this.tabKey='0';
+            // }else if(state==1){
+            //   this.tabKey='1';
+
+            // }else if(state==2){
+            //  this.tabKey='2';
+
+            // }else if(state==3){
+            // this.tabKey='3';
+            // }
+            //this.tabKey=state;
+           // console.log(res.data.iToolrecordList);
 				})
 				.catch(error => {
-					console.log(error);
+					//console.log(error);
 					alert('网络错误，不能访问');
-				})
-				
+        })
+        
+				//console.log(this.dataSource1);
     },
     handleClick(tab) {
       if(tab.label=='全部工具'){
@@ -270,9 +333,6 @@ export default {
       }
     },
     handleUpdate(tab){
-
-      //console.log(this.toolId,this.form.tname,this.form.count);
-      //var count =parseInt(this.form.tcount);
       this.axios.post('http://10.86.2.14:80/json/tool/updatetool',
       {
         "id":this.toolId,
@@ -284,13 +344,59 @@ export default {
           //console.log(this.dataSource);
 				})
 				.catch(error => {
-					console.log(error);
+					//console.log(error);
 					alert('网络错误，不能访问');
-        })
+      })
       this.dialogFormVisible=false;
       //tab.$index=0;
       this.tabKey='all';
       //this.tab.index="0";
+    },
+
+    handleUpdate1(tab){
+      //console.log(this.form2);
+      this.axios.post('http://10.86.2.14:80/json/tool/updatetoolrecord',
+      {
+        "id":this.toolRecordId,
+        "state":this.form2.state,
+        //"count":this.form2.count
+      })
+				.then(res => {
+          //console.log(this.toolRecordId,this.form2.state,this.form2.count);
+          if(this.form2.state==0){
+            this.getToolsRecord(0);
+            
+          // console.log(this.dataSource1,222);
+            this.tabKey='0';
+          }else if(this.form2.state==1){
+            //this.dataSource=[],
+            this.getToolsRecord(1);
+            
+            //console.log(this.dataSource1,222);
+            this.tabKey='1';
+
+          }else if(this.form2.state==2){
+          
+            this.getToolsRecord(2);
+          
+           this.tabKey='2';
+
+          }else if(this.form2.state==3){
+          
+          this.getToolsRecord(3);
+          //console.log(this.dataSource1,222);
+          this.tabKey='3';
+
+          }
+				})
+				.catch(error => {
+					console.log(error);
+					alert('网络错误，不能访问');
+      })
+      
+      this.dialogFormVisible2=false;
+      
+
     },
     onSubmit(){
       //console.log(this.form1.detailtypeId);
@@ -309,17 +415,41 @@ export default {
 					console.log(error);
 					alert('网络错误，不能访问');
         })
+        
         this.tabKey='all';
     },
      resetForm() {
         this.$refs['form1'].resetFields();
     },
     handleEdit(index, row) {
-      console.log(row);
+      //console.log(row);
       this.toolId=row.id
       this.dialogFormVisible=true;
       this.form.tname=row.tname;
       this.form.tcount=row.tcount;
+    },
+    handleEdit1(index, row) {
+      //console.log(row);
+      this.toolRecordId=row.id;
+      //console.log(this.toolRecordId);
+      this.dialogFormVisible2=true;
+      this.form2.state=row.state;
+      this.form2.count=row.count;
+     
+    },
+    handleDelete1(index, row){
+      this.axios.post('http://10.86.2.14:80/json/tool/deletetoolrecord',
+      {
+        "itoolrecordid":row.id
+      })
+				.then(res => {
+          this.getToolsRecord(row.state);
+          //console.log(this.dataSource);
+				})
+				.catch(error => {
+					console.log(error);
+					alert('网络错误，不能访问');
+        })
     },
   },
 }

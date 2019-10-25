@@ -111,6 +111,13 @@ const asideMenuConfig = [{
 		],
 		id: 'Menu_lkx69',
 	},
+	{
+		children: [{ name: '投诉', path: '/complaint', id: 'Menu_x269r' }],
+		path: '/dashboard',
+		name: '投诉管理',
+		icon: 'el-icon-document',
+		id: 'Menu_i1jiy',
+	  },
 ];
 
 export {
