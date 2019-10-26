@@ -39,26 +39,17 @@ const asideMenuConfig = [{
 		icon: 'el-icon-edit-outline',
 		children: [{
 				path: '/staff',
-				name: '从业人员管理',
+				name: '员工信息管理',
 				id: 'Menu_sn7l8'
 			},
 			{
 				path: '/logistics',
-				name: '后勤人员管理',
+				name: '用户信息管理',
 				id: 'Menu_ujy6g'
 			},
 		],
 		id: 'Menu_ngali',
 	}, 
-	{
-	    children: [
-	      { path: '/salary', name: '员工工资', id: 'Menu_kbc5w', icon: '' },
-	    ],
-	    path: '/dashboard',
-	    name: '财务统计',
-	    id: 'Menu_yrqij',
-	    icon: 'el-icon-bank-card',
-	  },
 	{
 		path: '/work',
 		name: '工作管理',

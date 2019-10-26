@@ -21,25 +21,43 @@
 					<el-input v-model="form.health" autocomplete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="服务类型">
-					<el-cascader v-model="form.detailtypeId" :show-all-levels="false" :props="props" :options="options"></el-cascader>
+					<DetailCascader  ref="fuck"/>
+				</el-form-item>
+				<el-form-item label="从业资格证">
+					<el-input v-model="form.qualification" autocomplete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="微信id">
+					<WeixinSelect ref="weixin" />
+				</el-form-item>
+				<el-form-item label="状态">
+					<el-select v-model="form.status" :clearable="true">
+						<el-option v-for="item in StatusOption" :key="item.value" :value="item.value" :label="item.label">
+							
+						</el-option>
+					</el-select>
 				</el-form-item>
 			</el-form>
 			<div slot="footer">
-				
 				<el-button @click="hide">取消</el-button>
-				<el-button type='primary' @click="submit">确定</el-button>
+				<el-button type='primary' >确定</el-button>
 			</div>
 		</el-dialog>
 	</div>
 </template>
 
 <script>
+	import WeixinSelect from "@/components/WeixinSelect"
+	import DetailCascader from '@/components/DetailCascader'
 	export default {
 		name: "StaffDialog",
-		
+		components: {
+			DetailCascader,
+			WeixinSelect
+		},
 		data() {
 			return {
 				visible: false,
+				submitMethod:null,
 				form: {
 					"name": "",
 					"sex": 0,
@@ -51,72 +69,64 @@
 					"status": 0,
 					"wechatId": 1
 				},
-				props:{
-					lazy:true,
-					emitPath:false,
-					lazyLoad:(node,resolve) =>{
-						
-						this.axios.post("/json/order/selectByserviceidTest", {"serviceid":node.value}).then((res)=>{
-							
-							if (res.data.code == 200){
-								const nodes = new Array()
-								let arr = res.data.data
-								for(let i = 0; i < arr.length; i++){
-									var o = {
-										"label":arr[i].typename,
-										"value":arr[i].id,
-										"leaf":true
-									}
-									nodes.push(o)
-								}
-								resolve(nodes)
-							}
-							
-						})
-						
-					}
-				},
-				options:[{
-					label:"钟点工",
-					value:"1",
-					children:[]
-				},{
-					label:"一般家政",
-					value:"2",
-					children:[]
-				},{
-					label:"家电维护",
-					value:"3",
-					children:[]
-				},{
-					label:"长期工",
-					value:"4",
-					children:[]
-				}],
+				StatusOption: [
+					{
+						value: 0,
+						label: "休闲中",
+					},
+					{
+						value: 1,
+						label: "休假中",
+					},
+					{
+						value: 2,
+						label: "服务中",
+					},
+					{
+						value: 3,
+						label: "无效",
+					},
+				],
+				
+				
 			}
 		},
 		methods: {
+			submit(){
+				this.submitMethod()
+			},
 			show() {
-				console.log("show")
+				this.submitMethod = this.create
 				this.visible = true
 			},
 			hide() {
 				console.log("hide")
 				this.visible = false
 			},
-			submit() {
-				this.axios.post("/json/staff/addStaff", this.form).then((res)=>{
+			update(){
+				this.form.detailtypeId = this.detailtypeId[1]
+				this.axios.post("/json/staff/updateStaff", this.form).then( (res) =>{
+					console.log(res)
+				})
+				this.hide()
+			},
+			create(){
+				this.form.detailtypeId = this.detailtypeId[1]
+				this.axios.post(url, this.form).then((res)=>{
 					console.log(res)
 				})
 				console.log("submit")
 				console.log(this.form)
-				this.visible = false
+				this.hide()
 			},
+			
 			changeStaff(staff){
-				console.log(staff)
+				this.submitMethod = this.update
 				this.form = staff
-				
-				this.show()
+				setTimeout(()=>{
+					this.$refs.fuck.setInitDetailId(staff)
+				}, 10)
+				this.visible = true
 			}
 		},
 	}

@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<el-select v-model="searchCondition.status">
+			<el-option v-for="item in statusOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
+		</el-select>
 		<el-table :data="tableData" style="width: 100%;">
 			<el-table-column prop="id" label="编号" width="100">
 				
@@ -42,35 +45,23 @@
 </template>
 
 <script>
+	import option from '@/js/option.js'
 export default {
 	data() {
 		return {
-			tableData: [{
-				"id":3,
-				"user_id":1,
-				"useraddress_id":1,
-				"detailtype_id":1,
-				"price":100,
-				"order_time":'2019-10-20 14:22:45',
-				"start_time":'2019-10-20 14:22:45',
-				"finaly_timer":'2019-10-20 16:32:39',
-				"state":4,
-				"comm":'asddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd'  + 
-				'asdaddddddddasddddddddddddddddddddddddddddddddddddd'
-			},{
-				"id":4,
-				"user_id":1,
-				"useraddress_id":1,
-				"detailtype_id":1,
-				"price":100,
-				"order_time":'2019-10-20 14:22:45',
-				"start_time":'2019-10-20 14:22:45',
-				"finaly_timer":'2019-10-20 16:32:39',
-				"state":4,
-				"comm":'string'
+			statusOption: option.StaffstatusOption,
+			searchCondition:{
+				status:0,
 			},
-
-			]
+			tableData: []
+		}
+	},
+	mounted:function(){
+		
+	},
+	methods: {
+		name() {
+			
 		}
 	},
 }
