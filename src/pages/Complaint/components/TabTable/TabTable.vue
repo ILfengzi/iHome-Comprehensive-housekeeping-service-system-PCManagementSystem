@@ -45,16 +45,16 @@
           :name="'2'"
           :key="'2'"
           tab-position="right">
-        <el-form :model="form">
-        <el-form-item label="订单id" :label-width="formLabelWidth1">
+        <el-form :model="form1" ref="form1">
+        <el-form-item label="订单id" :label-width="formLabelWidth1" prop="orderId">
           <el-input v-model="form1.orderId" style="width:350px;"></el-input>
         </el-form-item>
-        <el-form-item label="投诉问题" :label-width="formLabelWidth1">
+        <el-form-item label="投诉问题" :label-width="formLabelWidth1" prop="complaint">
           <el-input v-model="form1.complaint" style="width:350px;"></el-input>
         </el-form-item>
         <el-form-item :label-width="formLabelWidth1">
             <el-button type="primary" @click="onSubmit">添加</el-button>
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
+            <el-button @click="resetForm()">重置</el-button>
         </el-form-item>
       </el-form>
         </el-tab-pane>
@@ -104,6 +104,11 @@ export default {
         { tab: '已处理', key: '1'},
       ],
       columns: [
+        {
+          title:'订单ID',
+          dataIndex:'orderId',
+          key:'orderId',
+        },
         {
           title: '服务项目',
           dataIndex: 'typeName',
@@ -163,14 +168,14 @@ export default {
 
   methods: {
     getAllComplaint() {
-      this.axios.post('http://10.86.2.35:80/json/Complaint/selectComplaintByStatus',
+      this.axios.post('http://10.86.2.14:80/json/Complaint/selectComplaintByStatus',
       {
         
       })
 				.then(res => {
             this.dataSource=res.data.complaints;
             //this.dataSource=res.data.list.iStaff.name;
-					  console.log(res.data);
+					  //console.log(res.data);
 				})
 				.catch(error => {
 					console.log(error);
@@ -179,14 +184,14 @@ export default {
 				
     },
     getComplaintByCstatus(cstatus) {
-      this.axios.post('http://10.86.2.35:80/json/Complaint/selectComplaintByStatus',
+      this.axios.post('http://10.86.2.14:80/json/Complaint/selectComplaintByStatus',
       {
         "cstatus":cstatus
       })
 				.then(res => {
             this.dataSource=res.data.complaints;
             //this.dataSource=res.data.list.iStaff.name;
-					  console.log(res.data);
+					  //console.log(res.data);
 				})
 				.catch(error => {
 					console.log(error);
@@ -211,7 +216,7 @@ export default {
     },
     handleUpdate(tab){
       //console.log(this.form);
-      this.axios.post('http://10.86.2.35:80/json/Complaint/solveComplaint',
+      this.axios.post('http://10.86.2.14:80/json/Complaint/solveComplaint',
       {
         "id":this.complaintId,
         "solve":this.form.solve,
@@ -219,7 +224,7 @@ export default {
       })
 				.then(res => {
           this.getAllComplaint();
-          console.log(this.dataSource);
+          //console.log(this.dataSource);
 				})
 				.catch(error => {
 					console.log(error);
@@ -232,8 +237,26 @@ export default {
       
       
     },
-     resetForm(formName) {
-        this.$refs[formName].resetFields();
+    onSubmit(){
+      this.axios.post('http://10.86.2.14:80/json/Complaint/addComplaint',
+      {
+        
+        "orderId":this.form1.orderId,
+        "complaint":this.form1.complaint,
+        "cstatus":0
+      })
+				.then(res => {
+          this.getAllComplaint();
+          //console.log(this.dataSource);
+				})
+				.catch(error => {
+					console.log(error);
+					alert('网络错误，不能访问');
+        })
+        this.tabKey='all';
+    },
+     resetForm() {
+        this.$refs['form1'].resetFields();
     },
     handleEdit(index, row) {
       //console.log(row);

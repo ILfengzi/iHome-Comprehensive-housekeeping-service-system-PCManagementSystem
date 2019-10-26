@@ -62,38 +62,11 @@ const asideMenuConfig = [{
 		id: 'Menu_f1dsd'
 	},
 	{
-		children: [{
-			path: '/salary',
-			name: '员工工资',
-			id: 'Menu_kbc5w',
-			icon: ''
-		}, ],
 		path: '/dashboard',
-		name: '财务统计',
-		id: 'Menu_yrqij',
-		icon: 'el-icon-bank-card',
-	},
-	{
-		path: '/tool',
+		children: [{ name: '工具', path: '/tool', id: 'Menu_8fv0r' }],
 		name: '工具管理',
-		icon: 'el-icon-picture-outline',
-		children: [{
-				path: '/line',
-				name: '折线图',
-				id: 'Menu_uw149'
-			},
-			{
-				path: '/histogram',
-				name: '柱状图',
-				id: 'Menu_48w2i'
-			},
-			{
-				path: '/bar',
-				name: '条形图',
-				id: 'Menu_etlyg'
-			},
-		],
-		id: 'Menu_y7nwk',
+		icon: 'el-icon-s-cooperation',
+		id: 'Menu_s76t6',
 	},
 	{
 		path: '/profile',
@@ -129,6 +102,13 @@ const asideMenuConfig = [{
 		],
 		id: 'Menu_lkx69',
 	},
+	{
+		children: [{ name: '投诉', path: '/complaint', id: 'Menu_x269r' }],
+		path: '/dashboard',
+		name: '投诉管理',
+		icon: 'el-icon-document',
+		id: 'Menu_i1jiy',
+	  },
 ];
 
 export {

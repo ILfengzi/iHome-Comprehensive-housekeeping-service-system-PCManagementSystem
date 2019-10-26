@@ -83,7 +83,7 @@
 import BasicContainer from '@vue-materials/basic-container';
 // import DeleteBalloon from './components/DeleteBalloon';
 // import EditDialog from './components/EditDialog';
-import response from './tab-table.json';
+// import response from './tab-table.json';
 
 export default {
   components: {
