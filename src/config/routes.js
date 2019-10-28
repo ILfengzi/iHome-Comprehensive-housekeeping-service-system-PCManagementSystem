@@ -19,13 +19,16 @@ import StaffPlant from '@/pages/Work/StaffPlant';
 import Complaint from '@/pages/Complaint';
 import Tool from '@/pages/Tool';
 import UserManage from '@/pages/PersonManage/UserManage'
-
+import OrderInfo from '@/pages/Order/OrderInfo'
 
 const routerConfig = [
   {
     path: '/order',
     component: HeaderAsideLayout,
-    children: [{ path: '/order/order', component: Order }],
+    children: [
+			{ path: '/order/order', component: Order },
+			{ path: '/order/orderInfo', component: OrderInfo}
+		],
   },
   {
     path: '/person',
