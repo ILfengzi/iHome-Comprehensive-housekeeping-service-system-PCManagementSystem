@@ -122,10 +122,10 @@ export default {
 
   methods: {
      getUsers() {
-      this.axios.post('http://10.86.2.14:80/json/user/selectUsers',{})
+      this.axios.post('http://10.86.2.14:80/json/user/selectAllUser',{})
 				.then(res => {
             this.dataSource=res.data.userList;
-            console.log(res.data.userList);
+            //console.log(res.data.userList);
 				})
 				.catch(error => {
 					console.log(error);
