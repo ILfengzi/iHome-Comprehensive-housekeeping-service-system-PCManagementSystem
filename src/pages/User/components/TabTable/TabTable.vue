@@ -2,42 +2,43 @@
   <div class="tab-table">
     <basic-container>
        <el-table
-      :data="dataSource"
-      style="width: 100%"
-      height="100%">
-        <el-table-column
-          prop="name"
-          label="姓名"
-          width="120">
-        </el-table-column>
-        <el-table-column
-          prop="phone"
-          label="电话"
-          width="120">
-        </el-table-column>
-        <el-table-column label="常用地址及联系方式" width="120">
-           <template slot-scope="scope1">
-            <el-button
-              size="mini"
-              @click="handleEdit(scope1.$index, scope1.row)">详情</el-button>
-            </template>
-        </el-table-column>
-      </el-table>
+            :data="dataSource"
+            style="width: 100%">
+            <el-table-column
+              v-for="item,index in columns"
+              :label="item.title"
+              :prop="item.dataIndex"
+              :key="item.key"
+              :width="item.key !== 'action' ? (item.width || 150) : item.width">
+              <template slot-scope="scope">
+                <span v-if="item.key !== 'action'">{{scope.row[item.dataIndex]}}</span>
+                <span v-else>
+                  <el-button
+                    size="mini"
+                    type="primary"
+                    @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+                </span> 
+              </template>
+            </el-table-column>
+          </el-table>
     </basic-container>
-   <!-- Form 用于修改工具详情-->
-    <el-dialog title="修改工具详情" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="工具名" :label-width="formLabelWidth">
-          <el-input  v-model="form.tname" autocomplete="off" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="工具数量" :label-width="formLabelWidth">
-          <el-input  v-model="form.tcount" autocomplete="off" clearable></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleUpdate()">确 定</el-button>
-      </div>
+   <!-- 表格 用于显示用户地址-->
+    <el-dialog title="地址" :visible.sync="dialogTableVisible" width="800px">
+      
+      <el-table
+            :data="dataSource1"
+            style="width: 100%">
+            <el-table-column
+              v-for="item,index in columns1"
+              :label="item.title"
+              :prop="item.dataIndex"
+              :key="item.key"
+              :width="(item.key !== 'detail' ? (item.width || 110) : item.width)
+              ||(item.key === 'detail' ? (item.width || 300) : item.width)"
+              
+              >
+            </el-table-column>
+        </el-table>
     </el-dialog>
   </div>
   
@@ -59,15 +60,55 @@ export default {
     return {
      
       dataSource:[],
+      dataSource1:[],
+      columns: [
+        {
+          title: '姓名',
+          dataIndex: 'name',
+          key: 'name',
+        },
+        {
+          title: '电话',
+          dataIndex: 'phone',
+          key: 'phone',
+        },
+        {
+          title: '地址及联系方式',
+          key: 'action',
+
+        },
+      ],
+      columns1: [
+        {
+          title: '联系人',
+          dataIndex: 'username',
+          key: 'username',
+        },
+        {
+          title: '联系人电话',
+          dataIndex: 'phone',
+          key: 'phone',
+        },
+        {
+          title: '省份',
+          dataIndex: 'province',
+          key: 'province',
+        },
+        {
+          title: '城市',
+          dataIndex: 'city',
+          key: 'city',
+        },
+        {
+          title: '详细地址',
+          dataIndex: 'detail',
+          key: 'detail',
+        },
+        
+      ],
       value:null,
-      dialogFormVisible2: false,
       visible: false,
-      dialogFormVisible: false,
-      form: {
-          tname:"",
-          tcount:0,
-      },
-      formLabelWidth: '120px',
+      dialogTableVisible: false,
     };
   },
 
@@ -81,9 +122,10 @@ export default {
 
   methods: {
      getUsers() {
-      this.axios.get('http://10.86.2.14:80/json/user/selectUsers')
+      this.axios.post('http://10.86.2.14:80/json/user/selectUsers',{})
 				.then(res => {
             this.dataSource=res.data.userList;
+            console.log(res.data.userList);
 				})
 				.catch(error => {
 					console.log(error);
@@ -91,16 +133,20 @@ export default {
 				})
 				
     },
-    resetForm() {
-        this.$refs['form1'].resetFields();
-    },
     handleEdit(index, row) {
       //console.log(row);
-      this.toolId=row.id
-      this.dialogFormVisible=true;
-      this.form.tname=row.tname;
-      this.form.tcount=row.tcount;
+      this.axios.post('http://10.86.2.14:80/json/user/selectUserAddress',{"userId":row.id})
+				.then(res => {
+            this.dataSource1=res.data.addressList;
+				})
+				.catch(error => {
+					console.log(error);
+					alert('网络错误，不能访问');
+        })
+        this.dialogTableVisible=true;
+        
     },
+   
   },
 }
 
