@@ -1,15 +1,15 @@
 <template>
   <div class="User-page">
     <!-- 基于element的标签页表格组合 -->
-    <FixedTable />
+    <TabTable />
   </div>
 </template>
 <script>
-import FixedTable from './components/FixedTable';
+import TabTable from './components/TabTable';
 export default {
   name: 'User',
   components: {
-    FixedTable,
+    TabTable,
   },
 };
 </script>

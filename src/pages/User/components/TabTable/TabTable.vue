@@ -1,109 +1,111 @@
 <template>
   <div class="tab-table">
     <basic-container>
-      <el-tabs v-model="tabKey" @tab-click="handleClick">
-        <el-tab-pane
-          v-for="tab in tabs"
-          :label="tab.tab"
-          :name="tab.key"
-          :key="tab.key">
-          <el-table
-            :data="dataSource[tab.key]"
-            style="width: 100%">
-            <el-table-column
-              v-for="item, index in columns"
-              :label="item.title"
-              :prop="item.dataIndex"
-              :key="item.key"
-              :width="item.key !== 'action' ? (item.width || 150) : item.width">
-              <template slot-scope="scope">
-                <span v-if="item.key !== 'action'">{{scope.row[item.dataIndex]}}</span>
-                <edit-dialog :row="scope.row" :key.sync="item.key" :index="scope.$index" :tabKey="tabKey" @handleMod="handleMod"></edit-dialog>
-                <delete-balloon :key.sync="item.key" :index="scope.$index" :tabKey="tabKey" @handleRemove="handleRemove"></delete-balloon>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-tab-pane>
-      </el-tabs>
+       <el-table
+      :data="dataSource"
+      style="width: 100%"
+      height="100%">
+        <el-table-column
+          prop="name"
+          label="姓名"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="phone"
+          label="电话"
+          width="120">
+        </el-table-column>
+        <el-table-column label="常用地址及联系方式" width="120">
+           <template slot-scope="scope1">
+            <el-button
+              size="mini"
+              @click="handleEdit(scope1.$index, scope1.row)">详情</el-button>
+            </template>
+        </el-table-column>
+      </el-table>
     </basic-container>
+   <!-- Form 用于修改工具详情-->
+    <el-dialog title="修改工具详情" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="工具名" :label-width="formLabelWidth">
+          <el-input  v-model="form.tname" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="工具数量" :label-width="formLabelWidth">
+          <el-input  v-model="form.tcount" autocomplete="off" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleUpdate()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
+  
 </template>
 
 <script>
 import BasicContainer from '@vue-materials/basic-container';
-import DeleteBalloon from './components/DeleteBalloon';
-import EditDialog from './components/EditDialog';
-import response from './tab-table.json';
+import { stat } from 'fs';
+
 
 export default {
   components: {
-    BasicContainer,
-    DeleteBalloon,
-    EditDialog,
+    BasicContainer
+    
   },
   name: 'TabTable',
 
   data() {
     return {
-      tabKey: 'all',
-      dataSource: [],
-      tabs: [
-        { tab: '全部', key: 'all' },
-        { tab: '已发布', key: 'inreview' },
-        { tab: '审核中', key: 'released' },
-        { tab: '已拒绝', key: 'rejected' },
-      ],
-      columns: [
-        {
-          title: '标题',
-          dataIndex: 'title',
-          key: 'title',
-        },
-        {
-          title: '作者',
-          dataIndex: 'author',
-          key: 'author',
-        },
-        {
-          title: '状态',
-          dataIndex: 'status',
-          key: 'status',
-        },
-        {
-          title: '发布时间',
-          dataIndex: 'date',
-          key: 'date',
-        },
-        {
-          title: '操作',
-          key: 'action',
-        },
-      ],
+     
+      dataSource:[],
+      value:null,
+      dialogFormVisible2: false,
       visible: false,
+      dialogFormVisible: false,
+      form: {
+          tname:"",
+          tcount:0,
+      },
+      formLabelWidth: '120px',
     };
   },
 
-  created() {},
+  created() {
+    this.getUsers();
+  },
 
   mounted() {
-    this.dataSource = response.data;
+    //this.dataSource = response.data.all;
   },
 
   methods: {
-    handleClick(tab) {
-      console.log(tab);
+     getUsers() {
+      this.axios.get('http://10.86.2.14:80/json/user/selectUsers')
+				.then(res => {
+            this.dataSource=res.data.userList;
+				})
+				.catch(error => {
+					console.log(error);
+					alert('网络错误，不能访问');
+				})
+				
     },
-    handleRemove(index, tabKey) {
-      this.dataSource[tabKey].splice(index, 1);
+    resetForm() {
+        this.$refs['form1'].resetFields();
     },
-    handleMod(row, index, tabKey) {
-      this.$set(this.dataSource[tabKey], index, row);
+    handleEdit(index, row) {
+      //console.log(row);
+      this.toolId=row.id
+      this.dialogFormVisible=true;
+      this.form.tname=row.tname;
+      this.form.tcount=row.tcount;
     },
   },
 }
 
 </script>
-
+ 
 <style>
   .tab-table {
 
