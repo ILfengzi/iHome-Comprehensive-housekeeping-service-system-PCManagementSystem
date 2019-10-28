@@ -1,4 +1,4 @@
-const StaffstatusOption = [{
+const OrderstatusOption = [{
 		value: -1,
 		label: "全部"
 	},
@@ -28,8 +28,27 @@ const StaffstatusOption = [{
 	},
 ]
 
-
+const staffStatusOption = [
+	{
+		value:0,
+		label: "休闲中"
+	},
+	{
+		value:1,
+		label: "休假中"
+	},
+	{
+		value:2,
+		label: "服务中"
+	},
+	{
+		value:3,
+		label: "无效"
+	},
+	
+]
 
 export default{
-	StaffstatusOption,
+	OrderstatusOption,
+	staffStatusOption
 }

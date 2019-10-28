@@ -1,3 +1,10 @@
+<!--
+ * @Author: qiaoge2333
+ * @Date: 2019-10-16 09:19:38
+ * @LastEditors: qiaoge2333
+ * @Description: 这个乔哥搞得
+ * @LastEditTime: 2019-10-28 09:04:17
+ -->
 <template>
 	<div>
 		<el-button @click="showDialog">添加员工</el-button>
@@ -5,31 +12,30 @@
 			高级查询
 		</el-button>
 
-		<el-drawer title="高级查询" :visible.sync="HeightSearchDrawer" direction="rtl" >
-			<el-form v-model="form">
-				<el-form-item  label="姓名">
+		<el-drawer title="高级查询" :visible.sync="HeightSearchDrawer" direction="rtl">
+			<el-form :model="form" ref="heightSearch">
+				<el-form-item label="姓名" prop="name">
 					<el-input v-model="form.name" autocomplete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="性别">
+				<el-form-item label="性别" prop="sex">
 					<el-radio-group v-model="form.sex">
 						<el-radio :value="0" label="男"></el-radio>
 						<el-radio :value="1" label="女"></el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="手机号">
+				<el-form-item label="手机号" prop="phone">
 					<el-input v-model="form.phone" autocomplete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="服务类型">
-					<DetailCascader ref="detail"/>
-				</el-form-item>
-				<el-form-item label="状态">
-					<el-select></el-select>
-					<el-input v-model="form.status" autocomplete="off"></el-input>
+				<DetailCascader prop="detailtypeId" v-model="form.detailtypeId" ref="detail" />
+				<el-form-item label="状态" prop="status">
+					<el-select v-model="form.status">
+						<el-option v-for="item in statusOption" :key="item.value" :value="item.value" :label="item.label"></el-option>
+					</el-select>
 				</el-form-item>
 				<el-row align="middle">
 					<el-button type="primary" @click="search(2)">搜索</el-button>
-					<el-button type="infor">重置</el-button>
-					<el-button >取消</el-button>
+					<el-button type="infor" @click="resetForm('heightSearch')">重置</el-button>
+					<el-button>取消</el-button>
 				</el-row>
 			</el-form>
 		</el-drawer>
@@ -49,7 +55,7 @@
 
 			</el-table-column>
 			<el-table-column prop="detailtypeId" label="服务类型" width="100">
-				
+
 			</el-table-column>
 			<el-table-column prop="status" label="状态" width="100">
 				<template slot-scope="scope">
@@ -72,7 +78,7 @@
 		<el-row type="flex" justify="center">
 			<el-pagination @current-change="pageChange" :page-size="page.pageSize" :current-page="page.pageNum" layout="prev, pager, next"
 			 :total="page.total">
-			
+
 			</el-pagination>
 		</el-row>
 		<StaffDialog ref="dialog" />
@@ -84,30 +90,33 @@
 	import DetailCascader from '@/components/DetailCascader'
 	import global from "@/js/global.js"
 	import StaffDialog from "./components/StaffDialog"
+	import option from '@/js/option.js'
 	export default {
 		mounted: function() {
 			this.getDataMethod = this.getData(2)
 			this.getDataMethod(1)
 		},
+
 		components: {
 			StaffDialog,
 			DetailCascader
 		},
 		data() {
 			return {
-				form:{
-					name:"",
-					sex:0,
-					phone:"",
-					detailtypeId:0,
-					status:0,
+				form: {
+					name: "",
+					sex: null,
+					phone: "",
+					detailtypeId: null,
+					status: null,
 				},
 				HeightSearchDrawer: false,
 				vsexs: global.sexs,
+				statusOption: option.staffStatusOption,
 				vstatus: global.staffStatus,
 				deleteVisible: false,
 				tableData: [],
-				getDataMethod:null,
+				getDataMethod: null,
 				page: {
 					total: 0,
 					pageSize: 2,
@@ -116,56 +125,86 @@
 			}
 		},
 		methods: {
-			search(pageSize){
-				this.getDataMethod = heightSearch(pageSize)
+			resetForm(formName) {
+				this.$refs[formName].resetFields();
+			},
+			search(pageSize) {
+				console.log("-----------")
+				this.getDataMethod = this.heightSearch(pageSize)
+				console.log("*******************")
 				this.getDataMethod(1)
 			},
-			heightSearch(pageSize){
-				var search = (pageNum) =>{
-					setTimeout(_=>{
+			heightSearch(pageSize) {
+				var search = (pageNum) => {
+					setTimeout(_ => {
 						var object = new Object()
-						if(this.form.name != "") object.name = this.form.name
-						if(this.form.sex != -1) object.sex = this.form.sex
-						if(this.form.phone != "") obect.phone = this.form.phone
-						let detailtypeId = this.$refs.detail.getValue()
-						if(typeof(detailtypeId) != "undefined" && detailtypeId != null) object.detailtypeId = detailtypeId
+						if (this.form.name != null) {
+							object.name = this.form.name
+						}
+						if (this.form.sex != null) {
+							object.sex = this.form.sex
+						}
+						if (this.form.phone != "") {
+							obect.phone = this.form.phone
+						}
+						if (this.form.detailtypeId != null) {
+							object.detailtypeId = this.form.detailtypeId[1]
+						}
+						if (this.form.status != null) {
+							object.status = this.form.status
+						}
 						object.pageSize = pageSize
 						object.pageNum = pageNum
-						object.detailtypeId = this.$refs.detail.getValue()
-						this.axios.post("/json/staff/heightSearch",this.form).then((res)=>{
-							if(res.data.code == 200){
-								this.tableData = res.data.data.staffs
-								let page = res.data.data
-								this.page.pageSize = page.pageSize
-								this.page.pageNum = page.pageNum
-								this.page.total = page.total
-							}
-						})
-					},200)
+						console.log(this.form)
+						console.log(object)
+						// this.axios.post("/json/staff/heightSearch",this.form).then((res)=>{
+						// 	if(res.data.code == 200){
+						// 		console.log(res.data)
+						// 		this.tableData = res.data.data.staffs
+						// 		let page = res.data.data
+						// 		this.page.pageSize = page.pageSize
+						// 		this.page.pageNum = page.pageNum
+						// 		this.page.total = page.total
+						// 	}
+						// })
+					}, 200)
 				}
-				return search()
+				return search
 			},
 			showDialog() {
 				this.$refs.dialog.show()
 			},
 			getData(pageSize) {
-				var search = (pageNum) =>{
-					setTimeout(_=>{
-						this.axios.post("/json/staff/getAllStaffs", {"pageSize":pageSize,"pageNum":pageNum}).then((res) => {
+				var search = (pageNum) => {
+					setTimeout(_ => {
+						this.axios.post("/json/staff/getAllStaffs", {
+							"pageSize": pageSize,
+							"pageNum": pageNum
+						}).then((res) => {
 							if (res.data.code = 200) {
 								this.tableData = res.data.data.staffs
 								let page = res.data.data
 								this.page.pageSize = page.pageSize
 								this.page.pageNum = page.pageNum
 								this.page.total = page.total
+							}else{
+								this.$message({
+									message: 'warning',
+									type: '数据获取失败'
+								});
 							}
-						
+
+						}).catch(err => {
+							this.$message({
+								message: 'error',
+								type: '网络连接错误'
+							});
 						})
-					},200)
-					
+					}, 200)
+
 				}
 				return search
-				
+
 			},
 			pageChange(val) {
 				this.getDataMethod(val)
@@ -192,6 +231,11 @@
 								message: '恢复失败'
 							})
 						}
+					}).catch(_ =>{
+						this.$message({
+							message: 'error',
+							type: '网络连接错误'
+						});
 					})
 				}).catch(() => {
 					this.$message({

@@ -1,10 +1,23 @@
 <template>
-	<el-cascader v-model="detailtypeId" :show-all-levels="false" :props="props" :options="options"></el-cascader>
+	<el-form-item label="服务类型" :prop="prop">
+		<el-cascader v-model="detailtypeId" :clearable="true" :show-all-levels="false" :props="props" :options="options"></el-cascader>
+	</el-form-item>
 </template>
 
 <script>
 export default{
 	name:"DetailCascader",
+	props: {
+		prop: {
+			type: String,
+		},
+		value:{
+			type: Array,
+		}
+	},
+	 mounted(){
+	        this.detailtypeId = this.value;
+	    },
 	data() {
 		return {
 			detailtypeId:[],
@@ -56,6 +69,12 @@ export default{
 		},
 		getValue(){
 			return this.detailtypeId[1]
+		},
+	},
+	watch: {
+		detailtypeId(val) {
+			console.log('改变' + val)
+			this.$emit("input",val)
 		}
 	},
 }

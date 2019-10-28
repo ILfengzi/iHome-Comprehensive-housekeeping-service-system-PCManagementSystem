@@ -1,7 +1,14 @@
+<!--
+ * @Author: qiaoge2333
+ * @Date: 2019-10-16 08:36:44
+ * @LastEditors: qiaoge2333
+ * @Description: 这个乔哥搞得
+ * @LastEditTime: 2019-10-28 09:01:40
+ -->
 <template>
 	<div>
-		<el-select v-model="searchCondition.status">
-			<el-option v-for="item in statusOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
+		<el-select :clearable="true" v-model="searchCondition.status">
+			<el-option  v-for="item in statusOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
 		</el-select>
 		<el-table :data="tableData" style="width: 100%;">
 			<el-table-column prop="id" label="编号" width="100">
@@ -49,7 +56,7 @@
 export default {
 	data() {
 		return {
-			statusOption: option.StaffstatusOption,
+			statusOption: option.OrderstatusOption,
 			searchCondition:{
 				status:0,
 			},

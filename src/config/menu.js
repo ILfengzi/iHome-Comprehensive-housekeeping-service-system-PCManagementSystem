@@ -44,8 +44,13 @@ const asideMenuConfig = [{
 			},
 			{
 				path: '/logistics',
-				name: '用户信息管理',
+				name: '管理员信息管理',
 				id: 'Menu_ujy6g'
+			},
+			{
+				path: '/user',
+				name: '用户信息管理',
+				id: 'Menu_uj23g'
 			},
 		],
 		id: 'Menu_ngali',
