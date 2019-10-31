@@ -56,6 +56,7 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-pagination background @current-change="pageChange" :total="total" :page-size="pageSize" :current-page="pageNum" layout="prev, pager,next,jumper"></el-pagination>
         </el-tab-pane>
         <el-tab-pane 
           :label="'添加工具'"
@@ -238,6 +239,10 @@ export default {
       options:[],
       toolId:0,
       toolRecordId:0,
+			pageSize:6,
+			pageNum:1,
+			total:0,
+
     };
   },
 
@@ -251,7 +256,7 @@ export default {
 
   methods: {
     getAllTools() {
-      this.axios.get('http://10.86.2.14:80/json/tool/alltool')
+      this.axios.get('/json/tool/alltool')
 				.then(res => {
             this.dataSource=res.data.iToolList;
             //this.dataSource=res.data.list.iStaff.name;
@@ -263,19 +268,27 @@ export default {
 				})
 				
     },
-    getToolsRecord(state) {
+    getToolsRecord(state,pageNum,pageSize) {
       //console.log(state);
-      this.axios.post('http://10.86.2.14:80/json/tool/alltoolrecord',
+      this.axios.post('/json/tool/alltoolrecord',
       {
         "state":state,
+        "pageNum":pageNum,
+        "pageSize":pageSize,
       })
 				.then(res => {
             console.log(res);
             //console.log(this.dataSource1);
-            this.dataSource1=res.data.iToolrecordList;
-            for(let i=0;i<res.data.iToolrecordList.length;i++){
-                this.$set(this.dataSource1[i],'tname',res.data.iToolrecordList[i].iTool.tname);
+            this.dataSource1=res.data.pages.list;
+            if(res.data.pages.list.length!=0){
+              for(let i=0;i<res.data.pages.list.length;i++){
+                  this.$set(this.dataSource1[i],'tname',res.data.pages.list[i].iTool.tname);
+              }
+             
             }
+            this.pageNum=res.data.pages.pageNum;
+            this.pageSize=res.data.pages.pageSize;
+            this.total=res.data.pages.total;
             //console.log(state);
             
             // if(state==0){
@@ -292,10 +305,10 @@ export default {
             //this.tabKey=state;
            // console.log(res.data.iToolrecordList);
 				})
-				.catch(error => {
-					//console.log(error);
-					alert('网络错误，不能访问');
-        })
+				// .catch(error => {
+				// 	//console.log(error);
+				// 	alert('网络错误，不能访问1');
+        // })
         
 				//console.log(this.dataSource1);
     },
@@ -306,19 +319,19 @@ export default {
 
       }else if(tab.label=='待领取'){
         //console.log(0);
-        this.getToolsRecord(0);
+        this.getToolsRecord(0,1,this.pageSize);
       }
       else if(tab.label=='使用中'){
         //console.log(1);
-        this.getToolsRecord(1);
+        this.getToolsRecord(1,1,this.pageSize);
       }else if(tab.label=='已归还'){
         //console.log(2);
-        this.getToolsRecord(2);
+        this.getToolsRecord(2,1,this.pageSize);
       }else if(tab.label=='损坏'){
         //console.log(3);
-        this.getToolsRecord(3);
+        this.getToolsRecord(3,1,this.pageSize);
       }else{
-        this.axios.post('http://10.86.2.14:80/json/order/selectBytypename',
+        this.axios.post('/json/order/selectBytypename',
       {
         
       })
@@ -333,7 +346,7 @@ export default {
       }
     },
     handleUpdate(tab){
-      this.axios.post('http://10.86.2.14:80/json/tool/updatetool',
+      this.axios.post('/json/tool/updatetool',
       {
         "id":this.toolId,
         "tname":this.form.tname,
@@ -355,7 +368,7 @@ export default {
 
     handleUpdate1(tab){
       //console.log(this.form2);
-      this.axios.post('http://10.86.2.14:80/json/tool/updatetoolrecord',
+      this.axios.post('/json/tool/updatetoolrecord',
       {
         "id":this.toolRecordId,
         "state":this.form2.state,
@@ -364,26 +377,26 @@ export default {
 				.then(res => {
           //console.log(this.toolRecordId,this.form2.state,this.form2.count);
           if(this.form2.state==0){
-            this.getToolsRecord(0);
+            this.getToolsRecord(0,1,this.pageSize);
             
           // console.log(this.dataSource1,222);
             this.tabKey='0';
           }else if(this.form2.state==1){
             //this.dataSource=[],
-            this.getToolsRecord(1);
+            this.getToolsRecord(1,1,this.pageSize);
             
             //console.log(this.dataSource1,222);
             this.tabKey='1';
 
           }else if(this.form2.state==2){
           
-            this.getToolsRecord(2);
+            this.getToolsRecord(2,1,this.pageSize);
           
            this.tabKey='2';
 
           }else if(this.form2.state==3){
           
-          this.getToolsRecord(3);
+          this.getToolsRecord(3,1,this.pageSize);
           //console.log(this.dataSource1,222);
           this.tabKey='3';
 
@@ -400,7 +413,7 @@ export default {
     },
     onSubmit(){
       //console.log(this.form1.detailtypeId);
-      this.axios.post('http://10.86.2.14:80/json/tool/addtool',
+      this.axios.post('/json/tool/addtool',
       {
         
         "tname":this.form1.tname,
@@ -438,12 +451,12 @@ export default {
      
     },
     handleDelete1(index, row){
-      this.axios.post('http://10.86.2.14:80/json/tool/deletetoolrecord',
+      this.axios.post('/json/tool/deletetoolrecord',
       {
         "itoolrecordid":row.id
       })
 				.then(res => {
-          this.getToolsRecord(row.state);
+          this.getToolsRecord(row.state,1,this.pageSize);
           //console.log(this.dataSource);
 				})
 				.catch(error => {
@@ -451,6 +464,18 @@ export default {
 					alert('网络错误，不能访问');
         })
     },
+    pageChange(val){
+        console.log(val);
+      	if(this.tabKey=='0'){
+          this.getToolsRecord(0,val,this.pageSize);
+        }else if(this.tabKey=='1'){
+          this.getToolsRecord(1,val,this.pageSize);
+        }else if(this.tabKey=='2'){
+          this.getToolsRecord(1,val,this.pageSize);
+        }else if(this.tabKey=='3'){
+          this.getToolsRecord(1,val,this.pageSize);
+        }
+    }
   },
 }
 
