@@ -10,7 +10,7 @@
         <el-button type="primary" @click="handleChange()">更新员工工资</el-button>
         <el-button type="primary" @click="handleEdit()">修改提成</el-button>
           <el-table
-            :data="dataSource"
+            :data="dataSource.slice((pageNum-1)*pageSize,pageNum*pageSize)"
             style="width: 100%">
             <el-table-column
               v-for="item,index in columns"
@@ -35,6 +35,7 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-pagination background @current-change="pageChange" :total="total" :page-size="pageSize" :current-page="pageNum" layout="prev, pager,next,jumper"></el-pagination>
           <!-- <div id="myChart" :style="{width: '300px', height: '300px'}"></div> -->
     </basic-container>
     <!-- Form -->
@@ -157,6 +158,9 @@ export default {
       formLabelWidth1: '120px',
       myIndex:null,
       myRow:null,
+      pageSize:6,
+			pageNum:1,
+			total:0,
     };
   },
 
@@ -172,7 +176,7 @@ export default {
 
   methods: {
     getSalary(currentDate) {
-      this.axios.post('http://10.86.2.14:80/json/order/salarylistBymonth',
+      this.axios.post('/json/order/salarylistBymonth',
       {
         date1:currentDate
       })
@@ -180,11 +184,13 @@ export default {
             
             this.dataSource=res.data.list;
             //this.dataSource=res.data.list.iStaff.name;
+            if(res.data.list.length!=0){
             for(let i=0;i<res.data.list.length;i++){
                 this.$set(this.dataSource[i],'name',res.data.list[i].iStaff.name);
                 this.$set(this.dataSource[i],'typename',res.data.list[i].iStaff.typename);
 						}
-            
+            }
+            this.total=res.data.list.length;
 					  console.log(res.data);
 						
 				})
@@ -245,7 +251,7 @@ export default {
 
     handleEdit() {
       this.dialogFormVisible=true;
-      this.axios.post('http://10.86.2.14:80/json/order/selectBytypename',
+      this.axios.post('/json/order/selectBytypename',
       {
         
       })
@@ -263,7 +269,7 @@ export default {
     },
     handleUpdate(){
       //console.log(this.form);
-      this.axios.post('http://10.86.2.14:80/json/order/modifySalary',
+      this.axios.post('/json/order/modifySalary',
       {
         "bonusrate":this.form.bonusrate,
         "rolatyrate":this.form.rolatyrate,
@@ -319,6 +325,9 @@ export default {
     handleDelete(index, row) {
       console.log(index, row);
     },
+    pageChange(val){
+        this.pageNum = val; 
+    }
   },
 }
 

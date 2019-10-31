@@ -21,7 +21,7 @@ import Tool from '@/pages/Tool';
 import UserManage from '@/pages/PersonManage/UserManage';
 import OrderInfo from '@/pages/Order/OrderInfo';
 import Quit from '@/pages/Quit';
-
+import LongTermPlant from '@/pages/Work/LongTermPlant';
 
 const routerConfig = [
   {
@@ -55,7 +55,8 @@ const routerConfig = [
 	  component: HeaderAsideLayout,
 	  children: [
 		  { path: '/work/orderplant', component: OrderPlant},
-		  { path: '/work/staffplant', component: StaffPlant},
+      { path: '/work/staffplant', component: StaffPlant},
+      { path: '/work/LongTermplant', component: LongTermPlant},
 	  ]
   },
   {

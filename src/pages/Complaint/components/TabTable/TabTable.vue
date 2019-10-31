@@ -38,7 +38,9 @@
                 </span>
               </template>
             </el-table-column>
+            
           </el-table>
+          <el-pagination background @current-change="pageChange" :total="total" :page-size="pageSize" :current-page="pageNum" layout="prev, pager,next,jumper"></el-pagination>
         </el-tab-pane>
         <el-tab-pane 
           :label="'新建投诉记录'"
@@ -154,12 +156,15 @@ export default {
       formLabelWidth: '120px',
       options:[],
       complaintId:0,
+      pageSize:6,
+			pageNum:1,
+			total:0,
     };
   },
 
   created() {
    
-    this.getAllComplaint();
+    this.getAllComplaint(this.pageNum,this.pageSize);
   },
 
   mounted() {
@@ -167,15 +172,20 @@ export default {
   },
 
   methods: {
-    getAllComplaint() {
-      this.axios.post('http://10.86.2.14:80/json/Complaint/selectComplaintByStatus',
+    getAllComplaint(pageNum,pageSize) {
+      this.axios.post('/json/Complaint/selectComplaintByStatus',
       {
-        
+        "pageNum":pageNum,
+        "pageSize":pageSize
       })
 				.then(res => {
-            this.dataSource=res.data.complaints;
-            //this.dataSource=res.data.list.iStaff.name;
-					  //console.log(res.data);
+            console.log(res);
+            this.dataSource=res.data.pages.list;
+            this.pageNum=res.data.pages.pageNum;
+            this,pageSize=res.data.pages.pageSize;
+            this.total=res.data.pages.total;
+            //console.log(this.total);
+            
 				})
 				.catch(error => {
 					console.log(error);
@@ -183,13 +193,19 @@ export default {
 				})
 				
     },
-    getComplaintByCstatus(cstatus) {
-      this.axios.post('http://10.86.2.14:80/json/Complaint/selectComplaintByStatus',
+    getComplaintByCstatus(cstatus,pageNum,pageSize) {
+      this.axios.post('/json/Complaint/selectComplaintByStatus',
       {
-        "cstatus":cstatus
+        "cstatus":cstatus,
+        "pageNum":pageNum,
+        "pageSize":pageSize
       })
 				.then(res => {
-            this.dataSource=res.data.complaints;
+            this.dataSource=res.data.pages.list;
+            this.pageNum=res.data.pages.pageNum;
+            this.pageSize=res.data.pages.pageSize;
+            this.total=res.data.pages.pages;
+            console.log(this.total);
             //this.dataSource=res.data.list.iStaff.name;
 					  //console.log(res.data);
 				})
@@ -203,27 +219,27 @@ export default {
       //console.log(tab);
       if(tab.label=='全部')
       {
-        this.getAllComplaint();
+        this.getAllComplaint(1,this.pageSize);
         //console.log(tab);
       }else if(tab.label=='待处理'){
-        this.getComplaintByCstatus(0);
+        this.getComplaintByCstatus(0,1,this.pageSize);
         //console.log(tab);
       }
       else{
-        this.getComplaintByCstatus(1);
+        this.getComplaintByCstatus(1,1,this.pageSize);
         //console.log(2);
       }
     },
     handleUpdate(tab){
       //console.log(this.form);
-      this.axios.post('http://10.86.2.14:80/json/Complaint/solveComplaint',
+      this.axios.post('/json/Complaint/solveComplaint',
       {
         "id":this.complaintId,
         "solve":this.form.solve,
         "cstatus":1
       })
 				.then(res => {
-          this.getAllComplaint();
+          this.getAllComplaint(1,this.pageSize);
           //console.log(this.dataSource);
 				})
 				.catch(error => {
@@ -238,7 +254,7 @@ export default {
       
     },
     onSubmit(){
-      this.axios.post('http://10.86.2.14:80/json/Complaint/addComplaint',
+      this.axios.post('/json/Complaint/addComplaint',
       {
         
         "orderId":this.form1.orderId,
@@ -246,7 +262,7 @@ export default {
         "cstatus":0
       })
 				.then(res => {
-          this.getAllComplaint();
+          this.getAllComplaint(1,this.pageSize);
           //console.log(this.dataSource);
 				})
 				.catch(error => {
@@ -264,6 +280,17 @@ export default {
       this.dialogFormVisible=true;
 
     },
+   pageChange(val){
+				console.log(val)
+				if(this.tabKey=='all'){
+          this.getAllComplaint(val,this.pageSize);
+        }else if(this.tabKey=='0'){
+          this.getComplaintByCstatus(0,val,this.pageSize);
+        }else{
+          this.getComplaintByCstatus(1,val,this.pageSize);
+        }
+
+			},
   },
 }
 
