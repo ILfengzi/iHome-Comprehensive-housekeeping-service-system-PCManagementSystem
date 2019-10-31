@@ -3,10 +3,10 @@
  * @Date: 2019-10-16 09:19:38
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-28 09:04:17
+ * @LastEditTime: 2019-10-31 20:27:35
  -->
 <template>
-	<div>
+	<div v-loading="loading">
 		<el-button @click="showDialog">添加员工</el-button>
 		<el-button @click="HeightSearchDrawer = true" type="primary" style="margin-left: 16px;">
 			高级查询
@@ -70,6 +70,7 @@
 					<div v-else>
 						<el-button @click="deleteStaff(scope.row)">删除</el-button>
 						<el-button @click="updateStaff(scope.row)">修改</el-button>
+						<el-button type="primary" @click="getStaffInfo(scope.row)">详细信息</el-button>
 					</div>
 				</template>
 			</el-table-column>
@@ -110,6 +111,7 @@
 					detailtypeId: null,
 					status: null,
 				},
+				loading:false,
 				HeightSearchDrawer: false,
 				vsexs: global.sexs,
 				statusOption: option.staffStatusOption,
@@ -125,6 +127,9 @@
 			}
 		},
 		methods: {
+			getStaffInfo(val){
+				this.$router.push({path:"/work/staffInfo", query:val})
+			},
 			resetForm(formName) {
 				this.$refs[formName].resetFields();
 			},
@@ -176,6 +181,7 @@
 			},
 			getData(pageSize) {
 				var search = (pageNum) => {
+					this.loading = true
 					setTimeout(_ => {
 						this.axios.post("/json/staff/getAllStaffs", {
 							"pageSize": pageSize,
@@ -193,7 +199,7 @@
 									type: '数据获取失败'
 								});
 							}
-
+							this.loading = false
 						}).catch(err => {
 							this.$message({
 								message: 'error',

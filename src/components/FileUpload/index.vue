@@ -3,7 +3,7 @@
  * @Date: 2019-10-31 09:56:31
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-31 15:05:35
+ * @LastEditTime: 2019-10-31 21:53:05
  -->
 <template>
   <div>
@@ -13,13 +13,13 @@
       :action="action"
       :limit="1"
       :file-list="filelist"
+      accept=".png.jpg.gif.jpeg"
       v-loading="loading"
       :show-file-list="false"
       :before-upload="beforeUpload"
-      :disabled="but.disabled"
     >
-    <i class=""></i>
-      <el-button :type="but.type" ><i :class="but.icon"></i>{{but.msg}}</el-button>
+      <img v-if="src!=''" :src="src" />
+      <el-button v-else :type="but.type" ><i :class="but.icon"></i>{{but.msg}}</el-button>
     </el-upload>
   </div>
 </template>
@@ -28,6 +28,9 @@ export default {
   props:{
     action: {
       type:String,
+    },
+    src:{
+      type:String
     }
   },
   data() {
@@ -74,6 +77,7 @@ export default {
         });
         this.but = this.buts["success"]
         this.$emit("uploaded")
+        this.filelist = []
       } else {
         this.$message({
           message: res.data,

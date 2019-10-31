@@ -3,7 +3,7 @@
  * @Date: 2019-10-16 08:15:42
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-30 09:41:31
+ * @LastEditTime: 2019-10-31 17:12:00
  */
 import HeaderAsideLayout from '@/layouts/HeaderAsideLayout';
 import NotFound from '@/pages/NotFound';
@@ -21,6 +21,7 @@ import Tool from '@/pages/Tool';
 import UserManage from '@/pages/PersonManage/UserManage';
 import OrderInfo from '@/pages/Order/OrderInfo';
 import Quit from '@/pages/Quit';
+import StaffInfo from '@/pages/PersonManage/StaffManage/components/StaffInfo';
 
 
 const routerConfig = [
@@ -55,7 +56,8 @@ const routerConfig = [
 	  component: HeaderAsideLayout,
 	  children: [
 		  { path: '/work/orderplant', component: OrderPlant},
-		  { path: '/work/staffplant', component: StaffPlant},
+      { path: '/work/staffplant', component: StaffPlant},
+      { path: '/work/staffInfo', component: StaffInfo}
 	  ]
   },
   {
