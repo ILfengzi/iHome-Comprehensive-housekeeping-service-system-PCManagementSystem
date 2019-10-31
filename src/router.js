@@ -17,6 +17,10 @@ router.beforeEach((to, from, next) => {
   if(to.meta.title){
     document.title = to.meta.title
   }
+	if (to.fullPath == "/quit"){
+	  sessionStorage.clear();
+	  next({path:"/login"})
+	}
   let user = JSON.parse(sessionStorage.getItem("myUser") || '[]')
   if (user.name && user.password){
     next()
@@ -24,10 +28,7 @@ router.beforeEach((to, from, next) => {
     if (to.fullPath == "/login"){
       next()
     }
-    else if (to.fullPath == "/"){
-      sessionStorage.clear();
-      next()
-    } else {
+     else {
       next({path:"/login"})
     }
   }

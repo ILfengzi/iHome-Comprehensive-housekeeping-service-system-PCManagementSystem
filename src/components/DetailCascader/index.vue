@@ -72,6 +72,9 @@ export default{
 		},
 	},
 	watch: {
+		value(val){
+			this.detailtypeId = val;
+		},
 		detailtypeId(val) {
 			console.log('改变' + val)
 			this.$emit("input",val)

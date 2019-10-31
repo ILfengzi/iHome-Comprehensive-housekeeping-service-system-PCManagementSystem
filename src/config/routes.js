@@ -3,7 +3,7 @@
  * @Date: 2019-10-16 08:15:42
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-28 09:03:13
+ * @LastEditTime: 2019-10-30 09:41:31
  */
 import HeaderAsideLayout from '@/layouts/HeaderAsideLayout';
 import NotFound from '@/pages/NotFound';
@@ -18,8 +18,10 @@ import OrderPlant from '@/pages/Work/OrderPlant';
 import StaffPlant from '@/pages/Work/StaffPlant';
 import Complaint from '@/pages/Complaint';
 import Tool from '@/pages/Tool';
-import UserManage from '@/pages/PersonManage/UserManage'
-import OrderInfo from '@/pages/Order/OrderInfo'
+import UserManage from '@/pages/PersonManage/UserManage';
+import OrderInfo from '@/pages/Order/OrderInfo';
+import Quit from '@/pages/Quit';
+
 
 const routerConfig = [
   {
@@ -80,6 +82,7 @@ const routerConfig = [
     path: '/',
     component: HeaderAsideLayout,
     children: [
+			{path: '/quit', component: Quit},
       { path: '/dashboard/analysis', component: Dashboard },
       { path: '/dashboard/monitor', component: NotFound },
       { path: '/dashboard/workplace', component: NotFound },
@@ -87,6 +90,7 @@ const routerConfig = [
       { path: '/dashboard/salary', component: Salary },
       { path: '/dashboard/complaint', component: Complaint },
       { path: '/dashboard/tool', component: Tool },
+			
     ],
   },
   { path: '*', component: NotFound },
