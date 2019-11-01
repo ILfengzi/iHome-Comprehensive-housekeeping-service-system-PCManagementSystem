@@ -7,11 +7,11 @@
  -->
 <template>
 	<div v-loading="loading">
-		<el-button @click="showDialog">添加员工</el-button>
+		<!-- <el-button @click="showDialog">添加员工</el-button> -->
 		<el-button @click="HeightSearchDrawer = true" type="primary" style="margin-left: 16px;">
 			高级查询
 		</el-button>
-
+		<el-button @click="showForm">添加员工</el-button>
 		<el-drawer title="高级查询" :visible.sync="HeightSearchDrawer" direction="rtl">
 			<el-form :model="form" ref="heightSearch">
 				<el-form-item label="姓名" prop="name">
@@ -83,6 +83,27 @@
 			</el-pagination>
 		</el-row>
 		<StaffDialog ref="dialog" />
+		<el-dialog title="添加员工信息详情" :visible.sync="dialogFormVisible">
+			<el-form :model="form">
+				<el-form-item label="电话" :label-width="formLabelWidth">
+					<el-input  v-model="form.phone" autocomplete="off" clearable></el-input>
+				</el-form-item>
+				<el-form-item label="服务项目" :label-width="formLabelWidth">
+					<el-select v-model="form.typeid" clearable placeholder="请选择">
+						<el-option
+							v-for="item in options"
+							:key="item.id"
+							:label="item.typename"
+							:value="item.id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click="dialogFormVisible = false">取 消</el-button>
+				<el-button type="primary" @click="handleUpdate()">确 定</el-button>
+			</div>
+    	</el-dialog>
 
 	</div>
 </template>
@@ -124,6 +145,13 @@
 					pageSize: 2,
 					pageNum: 1,
 				},
+				dialogFormVisible:false,
+				form: {
+					phone:"",
+					typeid:null,
+				},
+				formLabelWidth: '120px',
+				options:[],
 			}
 		},
 		methods: {
@@ -282,6 +310,39 @@
 					})
 				})
 
+			},
+			showForm() {
+				this.dialogFormVisible=true;
+				this.axios.post('/json/order/selectBytypename',
+				{
+					
+				})
+				.then(res => {
+          			this.options=res.data.listd;
+          
+				})
+				.catch(error => {
+					console.log(error);
+					alert('网络错误，不能访问');
+				})
+     		 
+			},
+			handleUpdate(){
+				 this.axios.post('/json/staff/userStaff',
+				{
+					
+					"phone":this.form.phone,
+					"typeid":this.form.typeid
+				})
+				.then(res => {
+					
+					//console.log(this.dataSource);
+				})
+				.catch(error => {
+					//console.log(error);
+					alert('网络错误，不能访问');
+				})
+				this.dialogFormVisible=false;
 			}
 		},
 	}
