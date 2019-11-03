@@ -3,7 +3,7 @@
  * @Date: 2019-10-31 09:56:31
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-31 21:53:05
+ * @LastEditTime: 2019-11-01 22:23:16
  -->
 <template>
   <div>
@@ -13,7 +13,7 @@
       :action="action"
       :limit="1"
       :file-list="filelist"
-      accept=".png.jpg.gif.jpeg"
+      accept=".png,.jpg,.gif,.jpeg"
       v-loading="loading"
       :show-file-list="false"
       :before-upload="beforeUpload"

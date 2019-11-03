@@ -3,15 +3,23 @@
  * @Date: 2019-10-18 17:23:44
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-31 20:53:06
+ * @LastEditTime: 2019-11-01 10:05:42
  -->
 <template>
   <div v-loading="loading">
+    <el-form :model="form" ref="orderForm">
+      <el-form-item label="状态">
+        <el-select v-model="form.status" @change="selectChange" placeholder="请选择订单状态">
+          <el-option label="未分配" :value="0"></el-option>
+          <el-option label="已分配" :value="2"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
     <el-table :data="tableDate">
       <el-table-column prop="id" label="编号"></el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button @click="plant(scope.row)">分配员工</el-button>
+          <el-button @click="plant(scope.row.id)">分配员工</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -27,7 +35,7 @@
 export default {
   name: "workOrderPlant",
   mounted: function() {
-    this.getDataMethod = this.getData(2);
+    this.getDataMethod = this.getData(10);
     this.getDataMethod(1);
   },
   data() {
@@ -35,6 +43,9 @@ export default {
       getDataMethod: null,
       tableDate: [],
       loading: false,
+      form:{
+        status:0,
+      },
       page: {
         total: 0,
         pageSize: 3,
@@ -43,10 +54,16 @@ export default {
     };
   },
   methods: {
+    selectChange(val){
+      console.log(val)
+      this.getDataMethod = this.getData(10)
+      this.getDataMethod(1)
+    },
     getData(pageSize) {
       var object = new Object();
-      object.status = 0;
+      object.status = this.form.status;
       object.pageSize = pageSize;
+
       return pageNum => {
         this.loading = true;
         object.pageNum = pageNum;
@@ -78,12 +95,11 @@ export default {
     pageChange(val) {
       this.getDataMethod(val);
     },
-    plant(order) {
+    plant(id) {
       var query = {
-        startTime: order.startTime,
-        serviceId: order.detailtype.servicetpyeId,
-        orderId: order.id
+        id: id
       };
+      console.log(query)
       this.$router.push({
         path: "/work/staffplant",
         query: query
