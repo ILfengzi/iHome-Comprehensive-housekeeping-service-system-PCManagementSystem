@@ -3,13 +3,13 @@
  * @Date: 2019-10-16 09:19:38
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-11-04 08:19:48
+ * @LastEditTime: 2019-11-04 10:04:24
  -->
 <template>
   <div v-loading="loading">
     <!-- <el-button @click="showDialog">添加员工</el-button> -->
     <el-button @click="HeightSearchDrawer = true" type="primary" style="margin-left: 16px;">高级查询</el-button>
-    <el-button @click="showDialog">添加员工</el-button>
+    <el-button type="success" @click="showDialog">添加员工</el-button>
     <el-drawer title="高级查询" :visible.sync="HeightSearchDrawer" direction="rtl">
       <el-form :model="form" ref="heightSearch">
         <el-form-item label="姓名" prop="name">
@@ -36,7 +36,7 @@
           </el-select>
         </el-form-item>
         <el-row align="middle">
-          <el-button type="primary" @click="search(10)">搜索</el-button>
+          <el-button type="primary" @click="search(8)">搜索</el-button>
           <el-button type="infor" @click="resetForm('heightSearch')">重置</el-button>
           <el-button>取消</el-button>
         </el-row>
@@ -56,11 +56,11 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 3">
-            <el-button @click="recoverStaff(scope.row)">恢复删除的员工</el-button>
+            <el-button type="danger" @click="recoverStaff(scope.row)">恢复删除的员工</el-button>
           </div>
           <div v-else>
-            <el-button @click="deleteStaff(scope.row)">删除</el-button>
-            <el-button @click="updateStaff(scope.row)">修改</el-button>
+            <el-button type="danger" @click="deleteStaff(scope.row)">删除</el-button>
+            <el-button type="success" @click="updateStaff(scope.row)">修改</el-button>
             <el-button type="primary" @click="getStaffInfo(scope.row)">详细信息</el-button>
           </div>
         </template>
@@ -88,7 +88,7 @@ import StaffDialog from "./components/StaffDialog";
 import option from "@/js/option.js";
 export default {
   mounted: function() {
-    this.getDataMethod = this.getData(10);
+    this.getDataMethod = this.getData(8);
     this.getDataMethod(1);
   },
 
