@@ -108,6 +108,16 @@
 					key: 'typename',
 					},
 					{
+					title: '预约时间',
+					dataIndex: 'orderTime',
+					key: 'orderTime',
+					},
+					{
+					title: '备注',
+					dataIndex: 'comm',
+					key: 'comm',
+					},
+					{
 					title: '操作',
 					dataIndex: 'action',
 					key: 'action',

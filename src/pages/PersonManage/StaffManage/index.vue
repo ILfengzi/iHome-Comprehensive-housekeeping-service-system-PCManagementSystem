@@ -9,7 +9,7 @@
   <div v-loading="loading">
     <!-- <el-button @click="showDialog">添加员工</el-button> -->
     <el-button @click="HeightSearchDrawer = true" type="primary" style="margin-left: 16px;">高级查询</el-button>
-    <el-button type="success" @click="showDialog">添加员工</el-button>
+    <el-button @click="showForm" type="primary">添加员工</el-button>
     <el-drawer title="高级查询" :visible.sync="HeightSearchDrawer" direction="rtl">
       <el-form :model="form" ref="heightSearch">
         <el-form-item label="姓名" prop="name">
@@ -78,6 +78,27 @@
     </el-row>
     <StaffDialog ref="dialog" />
     
+	<el-dialog title="添加员工信息详情" :visible.sync="dialogFormVisible">
+			<el-form :model="form1">
+				<el-form-item label="电话" :label-width="formLabelWidth">
+					<el-input  v-model="form1.phone" autocomplete="off" clearable></el-input>
+				</el-form-item>
+				<el-form-item label="服务项目" :label-width="formLabelWidth">
+					<el-select v-model="form1.typeid" clearable placeholder="请选择">
+						<el-option
+							v-for="item in options"
+							:key="item.id"
+							:label="item.typename"
+							:value="item.id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click="dialogFormVisible = false">取 消</el-button>
+				<el-button type="primary" @click="handleUpdate()">确 定</el-button>
+			</div>
+    </el-dialog>
   </div>
 </template>
 
@@ -119,7 +140,11 @@ export default {
         pageNum: 1
       },
       dialogFormVisible: false,
-      formLabelWidth: "120px",
+	  formLabelWidth: "120px",
+	  form1: {
+		phone:"",
+		typeid:null,
+	  },
       options: []
     };
   },
@@ -300,8 +325,8 @@ export default {
     handleUpdate() {
       this.axios
         .post("/json/staff/userStaff", {
-          phone: this.form.phone,
-          typeid: this.form.typeid
+          phone: this.form1.phone,
+          typeid: this.form1.typeid
         })
         .then(res => {
           //console.log(this.dataSource);
