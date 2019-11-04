@@ -1,3 +1,10 @@
+<!--
+ * @Author: qiaoge2333
+ * @Date: 2019-10-25 14:57:34
+ * @LastEditors: qiaoge2333
+ * @Description: 这个乔哥搞得
+ * @LastEditTime: 2019-11-04 08:15:16
+ -->
 <template>
 	<el-form-item label="服务类型" :prop="prop">
 		<el-cascader v-model="detailtypeId" :clearable="true" :show-all-levels="false" :props="props" :options="options"></el-cascader>
@@ -77,7 +84,7 @@ export default{
 		},
 		detailtypeId(val) {
 			console.log('改变' + val)
-			this.$emit("input",val)
+			this.$emit("input",val[1])
 		}
 	},
 }
