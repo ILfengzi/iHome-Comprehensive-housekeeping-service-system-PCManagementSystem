@@ -3,7 +3,7 @@
  * @Date: 2019-10-16 09:19:30
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-31 09:08:51
+ * @LastEditTime: 2019-11-04 09:46:16
  -->
 <template>
   <div v-loading="pageLoading">
@@ -15,7 +15,7 @@
         <el-input v-model="form.phone" placeholder="请输入手机号" autocomplete="off"></el-input>
       </el-form-item>
       <PositionSelect prop="positionId" :value="form.positionId" v-model="form.positionId"></PositionSelect>
-      <el-button type="primary" @click="search(2)">搜索</el-button>
+      <el-button type="primary" @click="search(10)">搜索</el-button>
       <el-button type="primary" @click="addAdmin">添加管理员</el-button>
     </el-form>
 
@@ -72,7 +72,7 @@ export default {
     PositionSelect
   },
   mounted: function() {
-    this.getDataMethod = this.getData(2, {});
+    this.getDataMethod = this.getData(8, {});
     this.getDataMethod(1);
   },
   methods: {

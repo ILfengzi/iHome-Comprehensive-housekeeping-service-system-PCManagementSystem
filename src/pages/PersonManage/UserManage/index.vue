@@ -12,7 +12,7 @@
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="userform.phone" autocomplete="off"></el-input>
       </el-form-item>
-      <el-button @click="search(2)">搜索</el-button>
+      <el-button @click="search(10)">搜索</el-button>
     </el-form>
     <el-table :data="tableData">
       <el-table-column label="编号" prop="id"></el-table-column>
@@ -56,7 +56,7 @@ export default {
     FileUpload
   },
   mounted: function() {
-    this.getDataMethod = this.getData(2, {});
+    this.getDataMethod = this.getData(10, {});
     this.getDataMethod(1);
   },
   methods: {

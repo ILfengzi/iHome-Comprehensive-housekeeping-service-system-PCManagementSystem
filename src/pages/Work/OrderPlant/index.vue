@@ -3,7 +3,7 @@
  * @Date: 2019-10-18 17:23:44
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-11-01 10:05:42
+ * @LastEditTime: 2019-11-04 09:33:26
  -->
 <template>
   <div v-loading="loading">
@@ -17,6 +17,9 @@
     </el-form>
     <el-table :data="tableDate">
       <el-table-column prop="id" label="编号"></el-table-column>
+      <el-table-column label="下单时间" prop="orderTime"></el-table-column>
+      <el-table-column label="开始工作时间" prop="startTime"></el-table-column>
+      <el-table-column label="注释" prop="comm"></el-table-column>
       <el-table-column>
         <template slot-scope="scope">
           <el-button @click="plant(scope.row.id)">分配员工</el-button>
@@ -35,7 +38,7 @@
 export default {
   name: "workOrderPlant",
   mounted: function() {
-    this.getDataMethod = this.getData(10);
+    this.getDataMethod = this.getData(8);
     this.getDataMethod(1);
   },
   data() {
@@ -43,8 +46,8 @@ export default {
       getDataMethod: null,
       tableDate: [],
       loading: false,
-      form:{
-        status:0,
+      form: {
+        status: 0
       },
       page: {
         total: 0,
@@ -54,10 +57,10 @@ export default {
     };
   },
   methods: {
-    selectChange(val){
-      console.log(val)
-      this.getDataMethod = this.getData(10)
-      this.getDataMethod(1)
+    selectChange(val) {
+      console.log(val);
+      this.getDataMethod = this.getData(8);
+      this.getDataMethod(1);
     },
     getData(pageSize) {
       var object = new Object();
@@ -99,7 +102,7 @@ export default {
       var query = {
         id: id
       };
-      console.log(query)
+      console.log(query);
       this.$router.push({
         path: "/work/staffplant",
         query: query
