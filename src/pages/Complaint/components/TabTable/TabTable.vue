@@ -15,7 +15,7 @@
               :label="item.title"
               :prop="item.dataIndex"
               :key="item.key"
-              :width="item.key !== 'cstatus' ? (item.width || 150) : item.width">
+              :width="item.key === 'solve' ? (item.width || 300) : item.width">
               <template slot-scope="scope">
                 <span v-if="item.key !== 'cstatus'">{{scope.row[item.dataIndex]}}</span>
                 <!-- <edit-dialog :row="scope.row" :key.sync="item.key" :index="scope.$index" :tabKey="tabKey" @handleMod="handleMod"></edit-dialog>

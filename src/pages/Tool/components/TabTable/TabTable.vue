@@ -7,7 +7,7 @@
           :name="'all'"
           :key="'all'">
         <el-table
-            :data="dataSource"
+            :data="dataSource.slice((pageNum1-1)*pageSize1,pageNum1*pageSize1)"
             style="width: 100%">
             <el-table-column
               v-for="item,index in columns"
@@ -26,6 +26,7 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-pagination background @current-change="pageChange1" :total="total1" :page-size="pageSize1" :current-page="pageNum1" layout="prev, pager,next,jumper"></el-pagination>
         </el-tab-pane>
         <el-tab-pane
           v-for="tab in tabs"
@@ -241,7 +242,10 @@ export default {
       toolRecordId:0,
 			pageSize:6,
 			pageNum:1,
-			total:0,
+      total:0,
+      pageSize1:6,
+			pageNum1:1,
+			total1:0,
 
     };
   },
@@ -260,7 +264,8 @@ export default {
 				.then(res => {
             this.dataSource=res.data.iToolList;
             //this.dataSource=res.data.list.iStaff.name;
-					  //console.log(res.data);
+            //console.log(res.data);
+            this.total1=res.data.iToolList.length;
 				})
 				.catch(error => {
 					console.log(error);
@@ -475,6 +480,9 @@ export default {
         }else if(this.tabKey=='3'){
           this.getToolsRecord(1,val,this.pageSize);
         }
+    },
+    pageChange1(val){
+      this.pageNum1 = val;
     }
   },
 }
