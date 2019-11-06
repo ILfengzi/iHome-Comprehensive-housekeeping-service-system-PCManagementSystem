@@ -27,7 +27,7 @@
               class="user-avatar"
               src="https://img.alicdn.com/tfs/TB1ONhloamWBuNjy1XaXXXCbXXa-200-200.png"
             >
-            <span class="user-name">淘小宝</span>
+            <span class="user-name">{{name}}</span>
           </div>
           <el-dropdown-menu
             slot="dropdown"
@@ -53,11 +53,23 @@
 <script>
 export default {
   name: 'NavBar',
+  mounted() {
+    this.name = this.$store.getters["user/getName"]
+  },
+  data () {
+    return {
+      name:null,  
+    }
+  },
   methods: {
     logout() {
+      console.log(this.$store)
+      this.$store.commit('user/logout')
+      this.$router.push("/login")
       // console.log('Logout');
     },
   },
+
 };
 </script>
 

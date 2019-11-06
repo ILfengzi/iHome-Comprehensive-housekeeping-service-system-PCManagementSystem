@@ -1,7 +1,7 @@
 <!--
  * @Author: qiao
  * @Date: 2019-10-16 08:15:42
- * @LastEditTime: 2019-10-27 23:14:22
+ * @LastEditTime: 2019-11-06 17:57:53
  * @LastEditors: qiaoge2333
  * @Description: In User Settings Edit
  * @FilePath: \Vuee:\Code\Hbuilder\iHome\src\pages\Login\components\UserLogin\UserLogin.vue
@@ -43,8 +43,8 @@
             </el-row>
             <el-row class="form-item">
               <el-col>
-                <el-form-item>
-                  <el-checkbox class="checkbox">记住账号</el-checkbox>
+                <el-form-item prop="remenber">
+                  <el-checkbox class="checkbox" v-model="remenber">记住账号</el-checkbox>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -77,11 +77,32 @@ export default {
       user: {
         username: "",
         password: ""
-      }
+      },
+      remenber: false,
+      hasCookie: false
     };
   },
 
-  created() {},
+  mounted() {
+    console.log("登录页面初始化");
+    //获取到了cookie
+    let usr = this.$cookies.get("userInfo");
+    if (usr != null) {
+      //检测时间
+      let moment = this.$moment;
+      var now = moment();
+      var date = moment(usr.date);
+      console.log(now.isBefore(date));
+      //现在时间再过期时间之前
+      if (now.isBefore(date)) {
+        this.user.username = usr.username;
+        this.user.password = usr.password;
+        this.remenber = true;
+        return
+      }
+      this.$cookies.remove("userInfo")
+    }
+  },
 
   methods: {
     submitBtn() {
@@ -89,17 +110,33 @@ export default {
         if (valid) {
           let form = this.user;
           var object = new Object();
-          object.name = form.username;
-          object.password = form.password;
+          object.account = form.username;
+          object.pwd = form.password;
           this.axios
-            .post("/json/other/pcLogin", object)
+            .post("/json/admin/login", object)
             .then(res => {
               if (res.data.code == 200) {
                 //登录成功
                 this.$message.success("登录成功");
-                sessionStorage.setItem("myUser", JSON.stringify(object));
+                this.$store.commit("user/login", res.data.data);
+                //是否记住密码
+                if (this.remenber) {
+                  console.log("设置cookies");
+                  var moment = this.$moment;
+                  var now = moment();
+                  now.add(7, "days");
+                  this.user.date = now.format();
+                  this.$cookies.set("userInfo", this.user);
+                } else {
+                  this.$cookies.remove("userInfo");
+                }
                 //跳转
-                this.$router.push("/");
+                // this.$router.push("/");
+              } else {
+                this.$message({
+                  message: res.data.msg,
+                  type: "warning"
+                });
               }
             })
             .catch(err => {
