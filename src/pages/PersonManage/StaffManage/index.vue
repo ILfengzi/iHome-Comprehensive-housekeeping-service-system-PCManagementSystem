@@ -3,7 +3,7 @@
  * @Date: 2019-10-16 09:19:38
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-11-06 08:47:08
+ * @LastEditTime: 2019-11-06 09:08:07
  -->
 <template>
   <div v-loading="loading">
@@ -77,8 +77,6 @@
       ></el-pagination>
     </el-row>
     <StaffDialog ref="dialog" />
-<<<<<<< HEAD
-=======
     
 	<el-dialog title="添加员工信息详情" :visible.sync="dialogFormVisible">
 			<el-form :model="form1">
@@ -101,7 +99,6 @@
 				<el-button type="primary" @click="handleUpdate()">确 定</el-button>
 			</div>
     </el-dialog>
->>>>>>> e40e6e6e2817243ad0b40fb098477aee2a4d3d9f
   </div>
 </template>
 
