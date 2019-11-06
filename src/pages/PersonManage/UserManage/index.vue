@@ -12,7 +12,7 @@
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="userform.phone" autocomplete="off"></el-input>
       </el-form-item>
-      <el-button @click="search(10)">搜索</el-button>
+      <el-button @click="search(8)">搜索</el-button>
     </el-form>
     <el-table :data="tableData">
       <el-table-column label="编号" prop="id"></el-table-column>
@@ -28,9 +28,8 @@
         layout="prev, pager, next"
       ></el-pagination>
     </el-row>
-		<FileUpload action="/json/other/fileUpload"></FileUpload>
+    <FileUpload action="/json/other/fileUpload"></FileUpload>
   </div>
-	
 </template>
 
 <script>
@@ -56,40 +55,50 @@ export default {
     FileUpload
   },
   mounted: function() {
-    this.getDataMethod = this.getData(10, {});
-    this.getDataMethod(1);
+    this.getDataMethod = this.getData(8, {});
+    this.getDataMethod.page(1);
   },
   methods: {
     getData(pageSize, object) {
-      return pageNum => {
-        this.pageLoading = true;
+      var reload = _ => {
+        this.getPage(object);
+      };
+      var page = pageNum => {
         object.pageSize = pageSize;
         object.pageNum = pageNum;
-        this.axios
-          .post("/json/user/searchUserByCondition", object)
-          .then(res => {
-            if (res.data.code == 200) {
-              this.page = res.data.data.page;
-              this.tableData = res.data.data.users;
-              this.pageLoading = false;
-            } else {
-              this.$message({
-                message: "warning",
-                type: "数据获取失败"
-              });
-            }
-          })
-          .catch(_ => {
-            this.$message({
-              message: "error",
-              type: "网络连接错误"
-            });
-          });
+        this.getPage(object);
       };
+      return {
+        page: page,
+        reload: reload
+      };
+    },
+    getPage(object) {
+      this.pageLoading = true;
+      this.axios
+        .post("/json/user/searchUserByCondition", object)
+        .then(res => {
+          if (res.data.code == 200) {
+            this.page = res.data.data.page;
+            this.tableData = res.data.data.users;
+            this.pageLoading = false;
+          } else {
+            this.$message({
+              message: "warning",
+              type: "数据获取失败"
+            });
+          }
+        })
+        .catch(_ => {
+          this.$message({
+            message: "error",
+            type: "网络连接错误"
+          });
+        });
     },
     pageChange(val) {
       console.log(val);
-      this.getDataMethod(val);
+      this.getDataMethod.page(val);
     },
     search(pageSize) {
       var object = new Object();
@@ -101,7 +110,7 @@ export default {
         object.phone = form.phone;
       }
       this.getDataMethod = this.getData(pageSize, object);
-      this.getDataMethod(1);
+      this.getDataMethod.page(1);
     }
   }
 };

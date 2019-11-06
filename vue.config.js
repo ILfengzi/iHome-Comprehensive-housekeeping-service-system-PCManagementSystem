@@ -3,7 +3,7 @@
  * @Date: 2019-10-16 08:15:42
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-11-03 22:18:58
+ * @LastEditTime: 2019-11-05 17:43:46
  */
 const path = require('path');
 
@@ -11,7 +11,18 @@ module.exports = {
   publicPath: './',
   lintOnSave: false,
   devServer:{
-	  proxy: "https://www.ilfengzi.club"
+    proxy:{
+      '/image/':{
+        target: "http://www.ilfengzi.club",
+        changeOrigin:true,
+      },
+      "/":{
+        target:"https://www.ilfengzi.club",
+        changeOrigin:true,
+        secure: false,
+      }
+    },
+	  
   },
   configureWebpack: {
     resolve: {

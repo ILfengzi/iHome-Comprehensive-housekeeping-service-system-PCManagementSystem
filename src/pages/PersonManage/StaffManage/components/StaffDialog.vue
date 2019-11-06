@@ -3,7 +3,7 @@
  * @Date: 2019-10-17 21:29:01
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-11-03 22:41:51
+ * @LastEditTime: 2019-11-05 08:34:33
  -->
 <template>
   <div>
@@ -22,9 +22,7 @@
           <el-form-item prop="phone" label="手机号">
             <el-input v-model="form.phone" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item prop="detailtypeId" label="服务类型">
-            <DetailCascader v-model="form.detailtypeId" :value="form.detailtypeId" ref="fuck" />
-          </el-form-item>
+            <DetailCascader prop="detailtypeId" v-model="form.detailtypeId" :value="form.detailtypeId" ref="fuck" />
           <el-form-item prop="status" label="状态">
             <el-select v-model="form.status" :clearable="true">
               <el-option

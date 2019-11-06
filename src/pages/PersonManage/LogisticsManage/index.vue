@@ -3,7 +3,7 @@
  * @Date: 2019-10-16 09:19:30
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-11-04 09:46:16
+ * @LastEditTime: 2019-11-06 08:35:55
  -->
 <template>
   <div v-loading="pageLoading">
@@ -20,12 +20,12 @@
     </el-form>
 
     <el-table style="width: 100%;" :data="tableData">
-      <el-table-column prop="id" label="编号" width="100"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="100"></el-table-column>
-      <el-table-column prop="phone" label="手机号" width="100"></el-table-column>
-      <el-table-column prop="sex" label="性别" width="100"></el-table-column>
-      <el-table-column prop="position" label="职业" width="100"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column prop="id" label="编号" ></el-table-column>
+      <el-table-column prop="name" label="姓名" ></el-table-column>
+      <el-table-column prop="phone" label="手机号" ></el-table-column>
+      <el-table-column prop="sex" label="性别" ></el-table-column>
+      <el-table-column prop="position" label="职业" ></el-table-column>
+      <el-table-column fixed="right" width="200" label="操作">
         <template slot-scope="scope">
           <el-button type="primary" @click="updateAdmin(scope.row)">修改</el-button>
           <el-button type="danger" @click="deleteAdmin(scope.row,scope.index)">删除</el-button>
@@ -64,7 +64,7 @@ export default {
         pageNum: 1,
         total: 0
       },
-      pageLoading:true,
+      pageLoading: true
     };
   },
   components: {
@@ -73,7 +73,7 @@ export default {
   },
   mounted: function() {
     this.getDataMethod = this.getData(8, {});
-    this.getDataMethod(1);
+    this.getDataMethod.page(1);
   },
   methods: {
     addAdmin() {
@@ -83,37 +83,39 @@ export default {
       this.$refs.logisticsForm.updateAdmin(val);
       console.log(val);
     },
-    deleteAdmin(val,index) {
-      console.log(val)
-      this.axios.get("/json/admin/deleteAdmin/" + val.id).then((res) =>{
-        if(res.data.code == 200){
-          var arr = new Array()
-          for(let i = 0; i < this.tableData.length; i++){
-            if(i != index){
-              arr.push(this.tableData[i])
+    deleteAdmin(val, index) {
+      console.log(val);
+      this.axios
+        .get("/json/admin/deleteAdmin/" + val.id)
+        .then(res => {
+          if (res.data.code == 200) {
+            var arr = new Array();
+            for (let i = 0; i < this.tableData.length; i++) {
+              if (i != index) {
+                arr.push(this.tableData[i]);
+              }
             }
+            this.tableData = arr;
+            this.$message({
+              message: "删除成功",
+              type: "success"
+            });
+            this.getDataMethod.reload()
+          } else {
+            this.$message({
+              message: "删除失败",
+              type: "warning"
+            });
           }
-          this.tableData = arr
+        })
+        .catch(_ => {
           this.$message({
-            message: '删除成功',
-            type: 'success'
+            message: "网络连接错误",
+            type: "error"
           });
-        }else{
-          this.$message({
-            message: '删除失败',
-            type: 'warning'
-          });
-        }
-      }).catch(_=>{
-        this.$message({
-          message: '网络连接错误',
-          type: 'error'
         });
-      })
     },
-    changePage(val) {
-      this, getDataMethod(0);
-    },
+
     search(pageSize) {
       var object = new Object();
       if (this.form.name != "") {
@@ -126,39 +128,48 @@ export default {
         object.positionId = this.form.positionId;
       }
       this.getDataMethod = this.getData(pageSize, object);
-      this.getDataMethod(1);
+      this.getDataMethod.page(1);
     },
-    pageChange(val){
-      this.getDataMethod(val)
+    pageChange(val) {
+      this.getDataMethod.page(val);
     },
     getData(pageSize, object) {
       object.pageSize = pageSize;
-      return pageNum => {
-        this.pageLoading = true
+      var page = pageNum => {
         object.pageNum = pageNum;
-        this.axios
-          .post("/json/admin/getAdmins", object)
-          .then(res => {
-        this.pageLoading = false
-
-            if (res.data.code == 200) {
-              console.log(res.data.data.page)
-              this.tableData = res.data.data.data;
-              this.page = res.data.data.page;
-            } else {
-              this.$message({
-                message: "error",
-                type: "获取数据失败"
-              });
-            }
-          })
-          .catch(error => {
+        this.getPage(object);
+      };
+      var reload = _ => {
+        this.getPage(object);
+      };
+      return {
+        page:page,
+        reload:reload,
+      }
+    },
+    getPage(object) {
+      this.pageLoading = true;
+      this.axios
+        .post("/json/admin/getAdmins", object)
+        .then(res => {
+          if (res.data.code == 200) {
+            console.log(res.data.data.page);
+            this.tableData = res.data.data.data;
+            this.page = res.data.data.page;
+          } else {
             this.$message({
               message: "error",
-              type: "网络错误"
+              type: "获取数据失败"
             });
+          }
+          this.pageLoading = false;
+        })
+        .catch(error => {
+          this.$message({
+            message: "error",
+            type: "网络错误"
           });
-      };
+        });
     }
   }
 };

@@ -3,13 +3,13 @@
  * @Date: 2019-10-16 08:36:44
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-28 09:01:40
+ * @LastEditTime: 2019-11-04 14:07:19
  -->
 <template>
-	<div>
+	<div v-loading="loading">
 		<el-form :model="searchCondition">
 			<el-form-item prop="status" label="订单状态">
-				<el-select :clearable="true" v-model="searchCondition.status">
+				<el-select @change="statusChange" :clearable="true" v-model="searchCondition.status">
 					<el-option  v-for="item in statusOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
 			</el-form-item>
@@ -18,25 +18,13 @@
 			<el-table-column prop="id" label="编号" width="100">
 				
 			</el-table-column>
-			<el-table-column prop="user_id" label="用户编号" width="100">
-				
-			</el-table-column>
-			<el-table-column prop="useraddress_id" label="地址编号" width="100">
-				
-			</el-table-column>
-			<el-table-column prop="detailtype_id" label="详细服务编号" width="100">
-				
-			</el-table-column>
 			<el-table-column prop="price" label="价格" width="100">
 				
 			</el-table-column>
-			<el-table-column prop="order_time" label="下单时间" width="100">
+			<el-table-column prop="orderTime" label="下单时间" width="100">
 				
 			</el-table-column>
-			<el-table-column prop="start_time" label="服务开始时间" width="100">
-				
-			</el-table-column>
-			<el-table-column prop="finaly_timer" label="服务结束时间" width="100">
+			<el-table-column prop="startTime" label="服务开始时间" width="100">
 				
 			</el-table-column>
 			<el-table-column prop="state" label="状态" width="100">
@@ -47,7 +35,7 @@
 			</el-table-column>
 			<el-table-column label="操作" >
 				<template slot-scope="scope">
-					<el-button @click="getMoreInfo(scope.row)">获取详细信息</el-button>
+					<el-button type="success" @click="getMoreInfo(scope.row)">获取详细信息</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -68,6 +56,7 @@ export default {
 			searchCondition:{
 				status:0,
 			},
+			loading:true,
 			tableData: [],
 			getDataMethod:null,
 			page:{
@@ -78,15 +67,36 @@ export default {
 		}
 	},
 	mounted:function(){
-		this.getDataMethod = this.getData(2,{})
-		this.getDataMethod(1)
+		this.getDataMethod = this.getData(6,{})
+		this.getDataMethod.page(1)
 	},
 	methods: {
+		statusChange(val){
+			console.log(val)
+			var object = new Object()
+			if(val != -1){
+				object.state = val
+			}
+			this.getDataMethod = this.getData(6,object)
+			this.getDataMethod.page(1)
+		},
 		getData(pageSize, object) {
 			object.pageSize = pageSize
-			return (pageNum) =>{
+			var reload = _ =>{
+				this.getPage(object)
+			}
+			var page = pageNum =>{
 				object.pageNum = pageNum
-				this.axios.post("/json/order/getOrderDataByCondition", object).then((res)=>{
+				this.getPage(object)
+			}
+			return {
+				page:page,
+				reload:reload,
+			}
+		},
+		getPage(object){
+			this.loading = true
+			this.axios.post("/json/order/getOrderDataByCondition", object).then((res)=>{
 					if(res.data.code == 200){
 						this.tableData = res.data.data.list
 						this.page = res.data.data.page
@@ -96,18 +106,17 @@ export default {
 							type: '获取数据失败'
 						});
 					}
+			this.loading = false
+
 				}).catch( _ =>{
 					this.$message({
 						message: 'error',
 						type: '网络连接出错'
 					});
 				})
-
-			}
-				
 		},
 		pageChange(val){
-			this.getDataMethod(val)
+			this.getDataMethod.page(val)
 		},
 		search(pageSize){
 			var object = new Object()

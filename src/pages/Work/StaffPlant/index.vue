@@ -3,7 +3,7 @@
  * @Date: 2019-10-19 08:11:10
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-11-03 10:13:16
+ * @LastEditTime: 2019-11-04 15:31:19
  -->
 <template>
   <div v-if="orderInfo!=null" v-loading="loading.all">
@@ -66,6 +66,8 @@ export default {
     // this.orderId = this.$route.query.orderId;
     // this.object.startTime = this.$route.query.startTime;
     // this.getStaffs();
+    this.checkDateMethod = this.checkOrderTime
+    this.checkOrderTime()
   },
   data() {
     return {
@@ -79,16 +81,19 @@ export default {
       object: {
         startTime: null,
         pageNum: 1,
-        pageSize: 1,
+        pageSize: 10,
         serviceId: 1
       },
       orderInfo: null,
       disabledForGetMore: false,
+      checkDateMethod:null,
       result: [],
       data: []
     };
   },
   methods: {
+    //检测订单是否过期
+    
     removeStaff(staff) {
       this.loading.nowStaffs = true;
       var data = {
@@ -111,8 +116,12 @@ export default {
               message: "员工移除失败",
               type: "warning"
             });
-            this.loading.nowStaffs = false;
+            
           }
+          this.getStaffData(this.orderInfo.id)
+          setTimeout(_=>{
+            this.loading.nowStaffs = false;
+          },1000)
         })
         .catch(_ => {
           this.$message({
@@ -193,9 +202,11 @@ export default {
                 message: "添加员工成功",
                 type: "success"
               });
+              //获取员工数据
+              this.getStaffData(this.orderInfo.id)
             } else {
               this.$message({
-                message: "添加员工失败",
+                message: res.data.msg,
                 type: "warning"
               });
             }
