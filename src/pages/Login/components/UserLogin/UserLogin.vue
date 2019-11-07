@@ -1,7 +1,7 @@
 <!--
  * @Author: qiao
  * @Date: 2019-10-16 08:15:42
- * @LastEditTime: 2019-11-06 17:57:53
+ * @LastEditTime: 2019-11-07 08:48:11
  * @LastEditors: qiaoge2333
  * @Description: In User Settings Edit
  * @FilePath: \Vuee:\Code\Hbuilder\iHome\src\pages\Login\components\UserLogin\UserLogin.vue
@@ -131,7 +131,7 @@ export default {
                   this.$cookies.remove("userInfo");
                 }
                 //跳转
-                // this.$router.push("/");
+                this.$router.push("/");
               } else {
                 this.$message({
                   message: res.data.msg,
