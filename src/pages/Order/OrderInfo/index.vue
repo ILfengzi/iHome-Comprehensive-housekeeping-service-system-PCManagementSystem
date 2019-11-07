@@ -3,7 +3,7 @@
  * @Date: 2019-10-28 09:37:41
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-30 09:43:57
+ * @LastEditTime: 2019-11-07 11:04:14
  -->
 <template>
   <div>
@@ -18,8 +18,6 @@
             详细：{{orderInfo.orderDetails.data.detail}}
             <br />
             手机号：{{orderInfo.orderDetails.data.phone}}
-            <br />
-            状态：{{orderInfo.orderDetails.data.status}}
             <br />
           </div>
         </el-card>
@@ -46,11 +44,11 @@
         <template v-if="orderInfo.orderStaffs.data != null">
           <div :key="item.id" v-for="item in orderInfo.orderStaffs.data">
             <el-card  class="font24" >
-              员工编号：{{item.staffs.id}}
+              员工编号：{{item.id}}
               <br />
-              员工名称：{{item.staffs.name}}
+              员工名称：{{item.name}}
               <br />
-              手机号：{{item.staffs.phone}}
+              手机号：{{item.phone}}
               <br />
             </el-card>
           </div>
