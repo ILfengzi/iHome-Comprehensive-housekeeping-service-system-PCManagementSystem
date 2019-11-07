@@ -3,7 +3,7 @@
  * @Date: 2019-10-16 08:15:42
  * @LastEditors: qiaoge2333
  * @Description: 这个乔哥搞得
- * @LastEditTime: 2019-10-31 21:57:31
+ * @LastEditTime: 2019-11-07 22:55:05
  */
 import HeaderAsideLayout from '@/layouts/HeaderAsideLayout';
 import NotFound from '@/pages/NotFound';
@@ -29,70 +29,44 @@ const routerConfig = [
     path: '/order',
     component: HeaderAsideLayout,
     children: [
-			{ path: '/order/order', component: Order },
-			{ path: '/order/orderInfo', component: OrderInfo}
+			{ path: '/order/order', component: Order, meta:{keepAlive:true} },
+			{ path: '/order/orderInfo', component: OrderInfo, meta:{keepAlive:false}}
 		],
   },
   {
     path: '/person',
     component: HeaderAsideLayout,
     children: [
-      { path: '/person/staff', component: StaffManage },
-      { path: '/person/logistics', component: LogisticsManage },
-			{ path: '/person/user', component: UserManage },
-    ],
-  },
-  {
-    path: '/charts',
-    component: HeaderAsideLayout,
-    children: [
-      { path: '/charts/line', component: NotFound },
-      { path: '/charts/histogram', component: NotFound },
-      { path: '/charts/bar', component: NotFound },
+      { path: '/person/staff', component: StaffManage, meta:{keepAlive:true} },
+      { path: '/person/logistics', component: LogisticsManage , meta:{keepAlive:true}},
+			{ path: '/person/user', component: UserManage, meta:{keepAlive:true} },
     ],
   },
   {
 	  path: '/work',
 	  component: HeaderAsideLayout,
 	  children: [
-		  { path: '/work/orderplant', component: OrderPlant},
-      { path: '/work/staffplant', component: StaffPlant},
-      { path: '/work/staffInfo', component: StaffInfo},
-      { path: '/work/LongTermplant', component: LongTermPlant},
+		  { path: '/work/orderplant', component: OrderPlant, meta:{keepAlive:true}},
+      { path: '/work/staffplant', component: StaffPlant, meta:{keepAlive:false}},
+      { path: '/work/staffInfo', component: StaffInfo, meta:{keepAlive:false}},
+      { path: '/work/LongTermplant', component: LongTermPlant, meta:{keepAlive:true}},
 	  ]
   },
   {
-    path: '/profile',
-    component: HeaderAsideLayout,
-    children: [
-      { path: '/profile/success', component: NotFound },
-      { path: '/profile/fail', component: NotFound },
-    ],
-  },
-  {
-    path: '/result',
-    component: HeaderAsideLayout,
-    children: [
-      { path: '/result/success', component: NotFound },
-      { path: '/result/fail', component: NotFound },
-    ],
-  },
-  {
     path: '/login',
-    component: Login
+    component: Login,
+    meta:{keepAlive:false}
   },
   {
     path: '/',
     component: HeaderAsideLayout,
     children: [
 			{path: '/quit', component: Quit},
-      { path: '/dashboard/analysis', component: Dashboard },
-      { path: '/dashboard/monitor', component: NotFound },
-      { path: '/dashboard/workplace', component: NotFound },
-      { path: '/dashboard/user', component: User },
-      { path: '/dashboard/salary', component: Salary },
-      { path: '/dashboard/complaint', component: Complaint },
-      { path: '/dashboard/tool', component: Tool },
+      { path: '/dashboard/analysis', component: Dashboard, meta:{keepAlive:false}},
+      { path: '/dashboard/user', component: User, meta:{keepAlive:true} },
+      { path: '/dashboard/salary', component: Salary, meta:{keepAlive:true} },
+      { path: '/dashboard/complaint', component: Complaint, meta:{keepAlive:true} },
+      { path: '/dashboard/tool', component: Tool, meta:{keepAlive:true} },
 			
     ],
   },
