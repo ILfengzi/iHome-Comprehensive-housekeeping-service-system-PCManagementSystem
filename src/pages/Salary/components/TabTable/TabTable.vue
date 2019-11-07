@@ -51,11 +51,11 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="奖金" :label-width="formLabelWidth">
-          <el-input v-model="form.bonusrate" autocomplete="off"></el-input>
+        <el-form-item label="每颗星奖金" :label-width="formLabelWidth">
+          <el-input v-model="form.bonusrate" autocomplete="off" placeholder="请输入评价每颗星的奖金，如:100"></el-input>
         </el-form-item>
-        <el-form-item label="提成率" :label-width="formLabelWidth">
-          <el-input v-model="form.rolatyrate" autocomplete="off"></el-input>
+        <el-form-item label="每单提成率" :label-width="formLabelWidth">
+          <el-input v-model="form.rolatyrate" autocomplete="off" placeholder="请输入每单的提成率，如:0.5"></el-input>
         </el-form-item>
         
       </el-form>
